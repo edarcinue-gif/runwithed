@@ -534,8 +534,22 @@ function renderGames() {
     return;
   }
   el.innerHTML = games.map(g => gameCard(g)).join('');
+const hist = document.getElementById('history-list');
+if (hist) {
+  if (!window.pastGames?.length) {
+    hist.innerHTML = '<div style="font-size:13px;color:var(--ink3)">No past games yet.</div>';
+  } else {
+    hist.innerHTML = window.pastGames.map(g => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--s1);border:1px solid var(--rim);border-radius:10px;margin-bottom:8px;opacity:0.6">
+        <div>
+          <div style="font-size:14px;font-weight:600">${g.day_short} · ${g.date_str}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">${g.time_str}</div>
+        </div>
+        <div style="font-size:12px;color:var(--ink3)">${g.max_players} max</div>
+      </div>`).join('');
+    }
+  }
 }
-
 function gameCard(game) {
   const n = game.roster.length, max = game.max_players, full = n >= max;
   const pct = Math.min((n/max)*100, 100);
