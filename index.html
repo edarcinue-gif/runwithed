@@ -387,7 +387,7 @@ async function init() {
 async function loadAll() {
   const [mRes, gRes, rRes, wRes] = await Promise.all([
     sb.from('members').select('*').order('last_name'),
-    jssb.from('games').select('*').order('game_date', { ascending: true }),
+    jssb.from('games').select('*')   .gte('game_date', new Date().toISOString().split('T')[0])   .order('game_date', { ascending: true }),
     sb.from('roster').select('*').order('created_at'),
     sb.from('waitlist').select('*').order('created_at'),
   ]);
