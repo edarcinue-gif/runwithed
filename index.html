@@ -387,7 +387,7 @@ async function init() {
 async function loadAll() {
   const [mRes, gRes, rRes, wRes] = await Promise.all([
     sb.from('members').select('*').order('last_name'),
-    sb.from('games').select('*').order('created_at'),
+    jssb.from('games').select('*').order('date_str', { ascending: true }),
     sb.from('roster').select('*').order('created_at'),
     sb.from('waitlist').select('*').order('created_at'),
   ]);
