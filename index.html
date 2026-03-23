@@ -396,6 +396,10 @@ async function loadAll() {
     sb.from('roster').select('*').order('created_at'),
     sb.from('waitlist').select('*').order('created_at'),
   ]);
+    const hRes = await sb.from('games').select('*')
+    .lt('game_date', new Date().toISOString().split('T')[0])
+    .order('game_date', { ascending: false });
+  window.pastGames = hRes.data || [];
   if (mRes.error) throw mRes.error;
   members = mRes.data || [];
   const roster   = rRes.data || [];
