@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Run With Ed · AZN Basketball Club</title>
+<title>Run With Ed &middot; AZN Basketball Club</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
@@ -23,17 +23,14 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--ff);min-height:100vh;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(255,92,26,.06) 0%,transparent 70%)}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:4px}
-
 .page{display:none;position:relative;z-index:1}.page.active{display:block}
 .wrap{max-width:620px;margin:0 auto;padding:0 18px 80px}
 .wrap-wide{max-width:900px;margin:0 auto;padding:0 18px 80px}
-
 nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,92,26,.12);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
 .nav-logo{font-family:var(--fd);font-size:20px;letter-spacing:2px;color:var(--or);cursor:pointer;user-select:none}
 .nav-logo span{color:var(--ink)}
 .nav-links{display:flex;gap:6px;align-items:center}
 .nav-user{font-size:12px;color:var(--ink2);padding:0 4px}
-
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--ff);font-weight:600;font-size:13px;border:none;border-radius:8px;cursor:pointer;transition:all .18s;padding:8px 16px;line-height:1;white-space:nowrap}
 .btn-or{background:var(--or);color:#fff}.btn-or:hover{opacity:.85}
 .btn-gh{background:transparent;color:var(--ink2);border:1px solid var(--rim)}.btn-gh:hover{color:var(--ink);border-color:rgba(255,255,255,.2)}
@@ -45,21 +42,18 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-fil
 .btn-sm{padding:5px 10px;font-size:11px;border-radius:6px}
 .btn-xs{padding:3px 8px;font-size:10px;border-radius:5px;font-weight:700}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-
 .form-group{margin-bottom:16px}
 .form-label{display:block;font-size:11px;font-weight:600;color:var(--ink2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
 .fi{width:100%;background:var(--s2);border:1.5px solid var(--rim);border-radius:9px;padding:11px 14px;color:var(--ink);font-family:var(--ff);font-size:14px;outline:none;transition:border-color .18s}
 .fi:focus{border-color:var(--or)}.fi::placeholder{color:var(--ink3)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .ferr{font-size:11px;color:var(--re);margin-top:5px;display:none}
-
 .card{background:var(--s1);border:1px solid var(--rim);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
 .card-head{background:linear-gradient(135deg,var(--s2),var(--s3));padding:18px 20px;border-bottom:1px solid var(--rim2);display:flex;justify-content:space-between;align-items:flex-start}
 .game-day{font-family:var(--fd);font-size:44px;line-height:1;color:var(--or)}
 .game-date{font-size:12px;color:var(--ink3);margin-top:3px;font-weight:500}
 .time-badge{font-size:11px;font-weight:600;letter-spacing:.05em;padding:5px 11px;border-radius:6px;background:var(--or2);border:1px solid rgba(255,92,26,.22);color:var(--or)}
 .card-body{padding:18px 20px}
-
 .player-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;background:var(--s2);border:1px solid var(--rim2);margin-bottom:5px;transition:all .15s}
 .player-row.you{background:var(--or2);border-color:rgba(255,92,26,.25)}
 .player-row.wl{background:var(--go2);border-color:rgba(251,191,36,.18)}
@@ -81,32 +75,26 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-fil
 .b-paid{background:var(--gr2);color:var(--gr);border:1px solid rgba(52,211,153,.3)}
 .b-owe{background:var(--re2);color:var(--re);border:1px solid rgba(248,113,113,.3)}
 .b-att{background:var(--bl2);color:var(--bl);border:1px solid rgba(56,189,248,.3)}
-
 .wl-div{display:flex;align-items:center;gap:8px;margin:12px 0 8px}
 .wl-div span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--go);white-space:nowrap}
 .wl-div::before,.wl-div::after{content:'';flex:1;height:1px;background:rgba(251,191,36,.2)}
-
 .add-row{display:flex;gap:8px;margin-top:14px}
 .add-input{flex:1;background:var(--s2);border:1.5px solid var(--rim);border-radius:9px;padding:10px 14px;color:var(--ink);font-family:var(--ff);font-size:14px;outline:none;transition:border-color .18s}
 .add-input:focus{border-color:var(--or)}.add-input::placeholder{color:var(--ink3)}
-
 .bal-banner{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;margin-bottom:14px;font-size:13px}
 .bal-banner.owe{background:var(--re2);border:1px solid rgba(248,113,113,.25);color:var(--re)}
 .bal-banner.ok{background:var(--gr2);border:1px solid rgba(52,211,153,.2);color:var(--gr)}
 .bbi{font-size:20px;flex-shrink:0}
 .bbt strong{display:block;font-size:14px;font-weight:600;margin-bottom:2px}
 .bbt span{font-size:12px;opacity:.8}
-
 .ext-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .ext-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:7px 13px;border-radius:8px;text-decoration:none;transition:all .18s}
 .lv{background:rgba(0,160,255,.1);border:1px solid rgba(0,160,255,.25);color:#40aeff}.lv:hover{background:rgba(0,160,255,.18)}
 .lw{background:var(--gr3);border:1px solid rgba(52,211,153,.2);color:var(--gr)}.lw:hover{background:var(--gr2)}
-
 .roster-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .roster-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--ink2)}
 .bar-wrap{height:4px;background:var(--s3);border-radius:2px;overflow:hidden;margin-bottom:14px}
 .bar-fill{height:100%;border-radius:2px;transition:width .5s ease}
-
 .hero{padding:44px 0 32px}
 .hero-ey{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--or);margin-bottom:10px;display:flex;align-items:center;gap:10px}
 .hero-ey::before{content:'';width:24px;height:2px;background:var(--or)}
@@ -116,7 +104,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-fil
 .pills{display:flex;flex-wrap:wrap;gap:7px}
 .pill{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:20px;border:1px solid var(--rim);color:var(--ink2)}
 .pill.hot{border-color:rgba(255,92,26,.35);color:var(--or)}.pill.money{border-color:rgba(251,191,36,.35);color:var(--go)}
-
 .sec{margin-top:44px}
 .sec-title{font-family:var(--fd);font-size:32px;letter-spacing:1.5px;margin-bottom:3px}
 .sec-sub{font-size:11px;color:var(--ink3);letter-spacing:.08em;font-weight:500;text-transform:uppercase;margin-bottom:18px}
@@ -125,13 +112,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-fil
 .rule-n{font-family:var(--fd);font-size:24px;color:var(--or);opacity:.3;line-height:1;min-width:24px;padding-top:3px}
 .rule-b strong{display:block;font-size:14px;font-weight:600;margin-bottom:2px}
 .rule-b span{font-size:13px;color:var(--ink2);line-height:1.5}
-
 .auth-wrap{max-width:420px;margin:0 auto;padding:40px 18px 80px}
 .auth-head{margin-bottom:28px}
 .auth-head h2{font-family:var(--fd);font-size:46px;letter-spacing:2px;margin-bottom:6px}
 .auth-head p{font-size:14px;color:var(--ink2);line-height:1.6}
 .al{color:var(--or);text-decoration:none;font-weight:600}
-
 .admin-card{background:var(--s1);border:1px solid rgba(255,92,26,.15);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
 .admin-head{background:linear-gradient(135deg,rgba(255,92,26,.08),rgba(255,92,26,.03));border-bottom:1px solid rgba(255,92,26,.1);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
 .admin-head h3{font-family:var(--fd);font-size:20px;letter-spacing:1px;color:var(--or)}
@@ -139,7 +124,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-fil
 .admin-body{padding:18px 20px}
 .arow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rim2);flex-wrap:wrap}.arow:last-child{border-bottom:none}
 .uname{font-size:14px;font-weight:600}.uemail{font-size:11px;color:var(--ink3);margin-top:1px}
-
 .pay-hist{background:var(--s2);border:1px solid var(--rim);border-radius:10px;overflow:hidden;margin-top:14px}
 .ph-head{display:grid;grid-template-columns:1fr 90px 80px 70px;padding:8px 14px;border-bottom:1px solid var(--rim2);background:var(--s3)}
 .ph-head span{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
@@ -149,13 +133,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-fil
 .tag-paid{font-size:11px;font-weight:700;color:var(--gr);background:var(--gr2);padding:3px 8px;border-radius:8px;border:1px solid rgba(52,211,153,.25);white-space:nowrap}
 .tag-owe{font-size:11px;font-weight:700;color:var(--re);background:var(--re2);padding:3px 8px;border-radius:8px;border:1px solid rgba(248,113,113,.25);white-space:nowrap}
 .tag-pend{font-size:11px;color:var(--ink3)}
-
 .pay-tip{background:var(--s2);border:1px solid var(--rim);border-radius:10px;padding:16px;margin-bottom:18px}
 .pay-tip h4{font-family:var(--fd);font-size:18px;letter-spacing:1px;margin-bottom:8px;color:var(--go)}
 .pay-tip p{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:10px}
 .pay-tip ul{font-size:13px;color:var(--ink2);line-height:1.8;padding-left:18px}
 .pay-tip ul li strong{color:var(--ink)}
-
 .overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px}
 .overlay.open{display:flex}
 .modal{background:var(--s1);border:1px solid rgba(255,92,26,.2);border-radius:16px;padding:28px;width:100%;max-width:420px;position:relative;max-height:90vh;overflow-y:auto;animation:popIn .2s ease}
@@ -164,13 +146,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-fil
 .modal h2{font-family:var(--fd);font-size:26px;letter-spacing:1px;margin-bottom:4px}
 .modal-sub{font-size:13px;color:var(--ink2);line-height:1.5;margin-bottom:20px}
 .modal-actions{display:flex;gap:9px;margin-top:6px}.modal-actions .btn{flex:1;padding:12px}
-
-/* Loading */
 .spinner{width:32px;height:32px;border:3px solid var(--s3);border-top-color:var(--or);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;gap:16px;color:var(--ink3);font-size:13px}
-
-/* Setup screen */
 .setup-wrap{max-width:560px;margin:0 auto;padding:40px 18px 80px}
 .setup-step{background:var(--s1);border:1px solid var(--rim);border-radius:var(--r);padding:20px;margin-bottom:14px}
 .step-num{font-family:var(--fd);font-size:28px;color:var(--or);opacity:.5;line-height:1;margin-bottom:8px}
@@ -179,18 +157,61 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,12,12,.92);backdrop-fil
 .step-body a{color:var(--or);text-decoration:none;font-weight:600}
 .step-body code{background:var(--s2);padding:2px 7px;border-radius:5px;font-size:12px;color:var(--go);font-family:monospace}
 .step-body pre{background:var(--s2);border:1px solid var(--rim);border-radius:8px;padding:12px;margin-top:10px;font-size:12px;color:var(--go);font-family:monospace;overflow-x:auto;line-height:1.7;white-space:pre-wrap}
-
 .toasts{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
 .toast{background:var(--s2);border-radius:9px;padding:11px 16px;font-size:13px;min-width:200px;max-width:300px;border-left:3px solid var(--or);animation:slideUp .22s ease;color:var(--ink)}
 .toast.ok{border-color:var(--gr)}.toast.err{border-color:var(--re)}
 @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* Live badge */
 .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gr);margin-right:5px;animation:pulse 2s ease infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-
 footer{border-top:1px solid var(--rim2);padding:24px 18px;text-align:center;font-size:11px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;position:relative;z-index:1}
 footer strong{color:var(--or)}
+
+/* =========================================
+   QUOTE HERO
+========================================= */
+.qhero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+/* subtle court-grid texture */
+.qhero::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(rgba(255,92,26,.035) 1px,transparent 1px),
+             linear-gradient(90deg,rgba(255,92,26,.035) 1px,transparent 1px);
+  background-size:64px 64px}
+/* giant faded quote-mark watermark */
+.qhero-mark{position:absolute;top:-120px;left:-40px;font-family:var(--fd);font-size:min(82vw,760px);
+  line-height:1;color:var(--or);opacity:.025;pointer-events:none;user-select:none;z-index:0;letter-spacing:-10px}
+.qhero-inner{position:relative;z-index:1;max-width:700px;padding:110px 18px 100px;margin:0 auto;width:100%}
+/* NEXT RUN glowing pill */
+.qhero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,92,26,.08);
+  border:1px solid rgba(255,92,26,.48);color:var(--or);font-size:10px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;padding:5px 15px;border-radius:20px;
+  margin-bottom:18px;animation:qglow 2.8s ease-in-out infinite}
+@keyframes qglow{
+  0%,100%{box-shadow:0 0 14px rgba(255,92,26,.1),0 0 28px rgba(255,92,26,.04)}
+  50%{box-shadow:0 0 26px rgba(255,92,26,.3),0 0 52px rgba(255,92,26,.12)}}
+.qhero-session{display:block;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink3);margin-bottom:22px}
+/* the big quote */
+.qhero-text{font-family:var(--fd);font-size:clamp(38px,6.2vw,86px);line-height:1.04;
+  color:var(--ink);letter-spacing:1px;margin:0 0 24px;font-style:normal;transition:opacity .28s ease}
+.qhero-attr{display:block;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink2);margin-bottom:46px;transition:opacity .28s ease}
+/* arrow nav */
+.qhero-nav{display:flex;align-items:center;gap:13px}
+.qhero-arrow{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.1);
+  background:none;color:rgba(255,255,255,.25);font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0;line-height:1}
+.qhero-arrow:hover:not(:disabled){border-color:var(--or);color:var(--or);background:rgba(255,92,26,.08)}
+.qhero-arrow:disabled{opacity:.14;cursor:not-allowed}
+.qhero-counter{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);min-width:130px}
+/* scroll nudge */
+.qhero-scroll{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  font-size:9px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(255,255,255,.1);white-space:nowrap;animation:qscroll 2.4s ease-in-out infinite}
+@keyframes qscroll{0%,100%{opacity:.5;transform:translateX(-50%) translateY(0)}50%{opacity:1;transform:translateX(-50%) translateY(7px)}}
+/* divider between quote hero and main content */
+.qhero-div{height:1px;background:linear-gradient(90deg,transparent,rgba(255,92,26,.2) 35%,rgba(255,92,26,.2) 65%,transparent);position:relative;z-index:1}
+@media(max-width:600px){
+  .qhero-text{font-size:clamp(34px,9.5vw,54px)}
+  .qhero-inner{padding:90px 18px 86px}
+}
 </style>
 </head>
 <body>
@@ -200,32 +221,51 @@ footer strong{color:var(--or)}
   <div class="nav-links" id="nav-links"></div>
 </nav>
 
-<!-- ═══ SETUP (shown if not configured) ═══ -->
+<!-- SETUP -->
 <div class="page" id="page-setup">
   <div class="setup-wrap">
     <div style="padding-top:32px;margin-bottom:28px">
       <div style="font-family:var(--fd);font-size:52px;letter-spacing:2px;margin-bottom:8px">SETUP</div>
       <p style="font-size:14px;color:var(--ink2)">Open <strong style="color:var(--ink)">index.html</strong> in a text editor and fill in your Supabase credentials at the top of the &lt;script&gt; tag.</p>
     </div>
-    <div class="setup-step"><div class="step-num">01</div><div class="step-title">Create a free Supabase project</div><div class="step-body">Go to <a href="https://supabase.com" target="_blank">supabase.com</a> → New project → name it "runwithed" → pick any password → create.</div></div>
-    <div class="setup-step"><div class="step-num">02</div><div class="step-title">Run the setup SQL</div><div class="step-body">In your Supabase dashboard → <strong>SQL Editor</strong> → paste the contents of <code>setup.sql</code> → click Run. This creates all tables and loads all 30 members.</div></div>
-    <div class="setup-step"><div class="step-num">03</div><div class="step-title">Copy your credentials</div><div class="step-body">In Supabase → <strong>Settings → API</strong><br>Copy your <code>Project URL</code> and <code>anon public</code> key.</div></div>
+    <div class="setup-step"><div class="step-num">01</div><div class="step-title">Create a free Supabase project</div><div class="step-body">Go to <a href="https://supabase.com" target="_blank">supabase.com</a> &rarr; New project &rarr; name it &ldquo;runwithed&rdquo; &rarr; pick any password &rarr; create.</div></div>
+    <div class="setup-step"><div class="step-num">02</div><div class="step-title">Run the setup SQL</div><div class="step-body">In your Supabase dashboard &rarr; <strong>SQL Editor</strong> &rarr; paste the contents of <code>setup.sql</code> &rarr; click Run. This creates all tables and loads all 30 members.</div></div>
+    <div class="setup-step"><div class="step-num">03</div><div class="step-title">Copy your credentials</div><div class="step-body">In Supabase &rarr; <strong>Settings &rarr; API</strong><br>Copy your <code>Project URL</code> and <code>anon public</code> key.</div></div>
     <div class="setup-step"><div class="step-num">04</div><div class="step-title">Paste into this file</div><div class="step-body">At the top of the &lt;script&gt; block, replace:<pre>const SUPABASE_URL = 'https://xoxluqaxmhdpicjokici.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with your real values, then save.</div></div>
-    <div class="setup-step"><div class="step-num">05</div><div class="step-title">Deploy to GitHub Pages</div><div class="step-body">Rename the file to <code>index.html</code> → push to a GitHub repo → enable Pages under Settings → Pages → Branch: main.</div></div>
+    <div class="setup-step"><div class="step-num">05</div><div class="step-title">Deploy to GitHub Pages</div><div class="step-body">Rename the file to <code>index.html</code> &rarr; push to a GitHub repo &rarr; enable Pages under Settings &rarr; Pages &rarr; Branch: main.</div></div>
   </div>
 </div>
 
-<!-- ═══ HOME ═══ -->
+<!-- HOME -->
 <div class="page" id="page-home">
+
+  <!-- ===== QUOTE HERO ===== -->
+  <div class="qhero" id="qhero">
+    <div class="qhero-mark" aria-hidden="true">&ldquo;</div>
+    <div class="qhero-inner">
+      <span class="qhero-badge" id="qh-badge">&#9889; NEXT RUN</span>
+      <span class="qhero-session" id="qh-session"></span>
+      <blockquote class="qhero-text" id="qh-text"></blockquote>
+      <cite class="qhero-attr" id="qh-attr"></cite>
+      <div class="qhero-nav">
+        <button class="qhero-arrow" id="qh-prev" onclick="qNav(-1)" aria-label="Previous session">&#8592;</button>
+        <div class="qhero-counter" id="qh-counter"></div>
+        <button class="qhero-arrow" id="qh-next" onclick="qNav(1)" aria-label="Next session">&#8594;</button>
+      </div>
+    </div>
+    <div class="qhero-scroll">&#8595;&nbsp;&nbsp;scroll</div>
+  </div>
+  <div class="qhero-div"></div>
+
   <div class="wrap">
     <div class="hero">
-      <div class="hero-ey">Shoot 360 — Leander · Invitation Only</div>
+      <div class="hero-ey">Shoot 360 &mdash; Leander &middot; Invitation Only</div>
       <h1>PICKUP<br><em>HOOPS</em></h1>
-      <p class="hero-sub">First come, first reserved. Sign up below — waitlist if full. <span class="live-dot"></span><span style="font-size:12px;color:var(--gr)">Live</span></p>
+      <p class="hero-sub">First come, first reserved. Sign up below &mdash; waitlist if full. <span class="live-dot"></span><span style="font-size:12px;color:var(--gr)">Live</span></p>
       <div class="pills">
-        <span class="pill hot">🏀 Up to 15 Players</span>
-        <span class="pill">8 – 10 PM</span>
+        <span class="pill hot">&#127936; Up to 15 Players</span>
+        <span class="pill">8 &ndash; 10 PM</span>
         <span class="pill money">$11 / session</span>
         <span class="pill">2081 S Hwy 183, Leander TX</span>
       </div>
@@ -237,22 +277,22 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
       <div class="rules-list">
         <div class="rule"><div class="rule-n">01</div><div class="rule-b"><strong>Play for fun, not to hurt each other</strong><span>Recreational ball. Good competition, zero recklessness.</span></div></div>
         <div class="rule"><div class="rule-n">02</div><div class="rule-b"><strong>No cheap shots or hard fouls</strong><span>Competitive, not combative.</span></div></div>
-        <div class="rule"><div class="rule-n">03</div><div class="rule-b"><strong>No fighting — ever</strong><span>Zero tolerance. Permanent removal, full stop.</span></div></div>
-        <div class="rule"><div class="rule-n">04</div><div class="rule-b"><strong>Waiver required to play</strong><span>Sign the Shoot 360 waiver once and you're good forever.</span></div></div>
+        <div class="rule"><div class="rule-n">03</div><div class="rule-b"><strong>No fighting &mdash; ever</strong><span>Zero tolerance. Permanent removal, full stop.</span></div></div>
+        <div class="rule"><div class="rule-n">04</div><div class="rule-b"><strong>Waiver required to play</strong><span>Sign the Shoot 360 waiver once and you&rsquo;re good forever.</span></div></div>
         <div class="rule"><div class="rule-n">05</div><div class="rule-b"><strong>Pay $11 per session via Venmo</strong><span>Send to @Ed-Arcinue (Last 4: 0347). Pay Ed on game day.</span></div></div>
-        <div class="rule"><div class="rule-n">06</div><div class="rule-b"><strong>Invitation only — guests by approval</strong><span>Check with Ed before bringing a guest.</span></div></div>
+        <div class="rule"><div class="rule-n">06</div><div class="rule-b"><strong>Invitation only &mdash; guests by approval</strong><span>Check with Ed before bringing a guest.</span></div></div>
       </div>
     </div>
   </div>
-<div class="sec" id="history-section">
-  <div class="sec-title">Past Games</div>
-  <div class="sec-sub">Previous runs</div>
-  <div id="history-list"></div>
-</div>
-  <footer><strong>RUN WITH ED</strong> · AZN Basketball Club · Shoot 360 Leander · 2081 S Hwy 183</footer>
+  <div class="sec" id="history-section" style="max-width:620px;margin:44px auto 0;padding:0 18px">
+    <div class="sec-title">Past Games</div>
+    <div class="sec-sub">Previous runs</div>
+    <div id="history-list"></div>
+  </div>
+  <footer><strong>RUN WITH ED</strong> &middot; AZN Basketball Club &middot; Shoot 360 Leander &middot; 2081 S Hwy 183</footer>
 </div>
 
-<!-- ═══ REGISTER ═══ -->
+<!-- REGISTER -->
 <div class="page" id="page-register">
   <div class="auth-wrap">
     <div class="auth-head"><h2>JOIN THE RUN</h2><p>Create your account to sign up for games and track payments.</p></div>
@@ -263,21 +303,21 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
     <div class="form-group"><label class="form-label">Email *</label><input class="fi" type="email" id="reg-email" placeholder="you@email.com" maxlength="80"><div class="ferr" id="err-re">Enter a valid email</div></div>
     <div class="form-group"><label class="form-label">Phone *</label><input class="fi" type="tel" id="reg-phone" placeholder="(512) 555-0100" maxlength="20"><div class="ferr" id="err-rp">Required</div></div>
     <button class="btn btn-or btn-lg" style="margin-top:4px" id="reg-btn" onclick="submitReg()">Create Account</button>
-    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--ink2)">Already registered? <a href="#" class="al" onclick="showPage('login');return false">Sign in →</a></p>
+    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--ink2)">Already registered? <a href="#" class="al" onclick="showPage('login');return false">Sign in &rarr;</a></p>
   </div>
 </div>
 
-<!-- ═══ LOGIN ═══ -->
+<!-- LOGIN -->
 <div class="page" id="page-login">
   <div class="auth-wrap">
     <div class="auth-head"><h2>SIGN IN</h2><p>Enter the email you registered with.</p></div>
-    <div class="form-group"><label class="form-label">Email</label><input class="fi" type="email" id="login-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')submitLogin()"><div class="ferr" id="err-login">No account found. <a href="#" class="al" onclick="showPage('register');return false">Register first →</a></div></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="fi" type="email" id="login-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')submitLogin()"><div class="ferr" id="err-login">No account found. <a href="#" class="al" onclick="showPage('register');return false">Register first &rarr;</a></div></div>
     <button class="btn btn-or btn-lg" style="margin-top:4px" id="login-btn" onclick="submitLogin()">Sign In</button>
-    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--ink2)">New here? <a href="#" class="al" onclick="showPage('register');return false">Create account →</a></p>
+    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--ink2)">New here? <a href="#" class="al" onclick="showPage('register');return false">Create account &rarr;</a></p>
   </div>
 </div>
 
-<!-- ═══ MY SESSIONS ═══ -->
+<!-- MY SESSIONS -->
 <div class="page" id="page-payments">
   <div class="wrap">
     <div style="padding-top:32px;margin-bottom:24px">
@@ -286,10 +326,10 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
       <div style="font-size:13px;color:var(--ink2)" id="pay-name-line"></div>
     </div>
     <div class="pay-tip">
-      <h4>💡 HOW PAYMENTS WORK</h4>
-      <p>Pay Ed <strong>after</strong> you play — not before. Ed marks you paid in the admin panel once he sees it on Venmo.</p>
+      <h4>&#128161; HOW PAYMENTS WORK</h4>
+      <p>Pay Ed <strong>after</strong> you play &mdash; not before. Ed marks you paid in the admin panel once he sees it on Venmo.</p>
       <ul>
-        <li><strong>Venmo:</strong> <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--or);font-weight:700">@Ed-Arcinue</a> (Last 4: 0347) — include your name + game date</li>
+        <li><strong>Venmo:</strong> <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--or);font-weight:700">@Ed-Arcinue</a> (Last 4: 0347) &mdash; include your name + game date</li>
         <li><strong>Outstanding balance</strong> shows as a warning on game cards before your next sign-up</li>
       </ul>
     </div>
@@ -298,7 +338,7 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
   </div>
 </div>
 
-<!-- ═══ ADMIN ═══ -->
+<!-- ADMIN -->
 <div class="page" id="page-admin">
   <div class="wrap-wide">
     <div style="padding-top:32px;margin-bottom:24px">
@@ -311,7 +351,7 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
           <div><div class="form-label" style="margin-bottom:6px">Day</div><select class="fi" id="new-day" style="width:145px;padding:9px 12px"><option>Wednesday</option><option>Sunday</option><option>Saturday</option><option>Friday</option></select></div>
           <div><div class="form-label" style="margin-bottom:6px">Date</div><input type="date" class="fi" id="new-date" style="padding:9px 12px"></div>
-          <div><div class="form-label" style="margin-bottom:6px">Time</div><input class="fi" id="new-time" value="8 – 10 PM" style="width:110px;padding:9px 12px"></div>
+          <div><div class="form-label" style="margin-bottom:6px">Time</div><input class="fi" id="new-time" value="8 &ndash; 10 PM" style="width:110px;padding:9px 12px"></div>
           <div><div class="form-label" style="margin-bottom:6px">Max</div><input type="number" class="fi" id="new-max" value="15" min="4" max="30" style="width:70px;padding:9px 12px"></div>
           <button class="btn btn-or" onclick="adminAddGame()">Add Game</button>
         </div>
@@ -329,13 +369,32 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
       <div class="admin-head"><h3>REGISTERED MEMBERS</h3><span id="admin-user-count"></span></div>
       <div class="admin-body" id="admin-users-body"></div>
     </div>
+    <!-- QUOTES MANAGEMENT -->
+    <div class="admin-card" id="admin-quotes-card">
+      <div class="admin-head"><h3>QUOTES</h3><span id="admin-quotes-count"></span></div>
+      <div class="admin-body">
+        <div style="background:var(--s2);border:1px solid var(--rim);border-radius:10px;padding:16px;margin-bottom:20px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin-bottom:12px">Add New Quote</div>
+          <div class="form-group" style="margin-bottom:10px">
+            <textarea class="fi" id="new-quote-text" rows="3" placeholder="Enter the quote&hellip;" style="resize:vertical;line-height:1.55"></textarea>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px">
+              <input class="fi" id="new-quote-attr" placeholder="Attribution &mdash; e.g. Michael Jordan" style="padding:9px 14px">
+            </div>
+            <button class="btn btn-or" onclick="addCustomQuote()">Add Quote</button>
+          </div>
+        </div>
+        <div id="admin-quotes-list"></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ═══ CANCEL MODAL ═══ -->
+<!-- CANCEL MODAL -->
 <div class="overlay" id="cancel-modal">
   <div class="modal" style="border-color:rgba(248,113,113,.25)">
-    <button class="modal-close" onclick="closeModal('cancel-modal')">✕</button>
+    <button class="modal-close" onclick="closeModal('cancel-modal')">&times;</button>
     <h2>REMOVE PLAYER?</h2>
     <p class="modal-sub" id="cancel-sub"></p>
     <div class="modal-actions">
@@ -348,606 +407,504 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
 <div class="toasts" id="toasts"></div>
 
 <script>
-// ╔══════════════════════════════════════════════════╗
-// ║  CONFIGURATION — fill these in before deploying  ║
-// ╚══════════════════════════════════════════════════╝
 const SUPABASE_URL = 'https://xoxluqaxmhdpicjokici.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';
-// ────────────────────────────────────────────────────
 
 const CONFIGURED = !SUPABASE_URL.startsWith('YOUR_');
 let sb = null;
 if (CONFIGURED) sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ── State ──
-let members = [];
-let games   = [];   // each game has .roster[] and .waitlist[]
-let CU      = null; // current user (member object)
-let pendingCancel = {};
+let members = [], games = [], CU = null, pendingCancel = {};
 
-// ══════════════════════════════════════════════════
-// BOOT
-// ══════════════════════════════════════════════════
-async function init() {
-  if (!CONFIGURED) { showPage('setup'); renderNav(); return; }
+/* =====================================================
+   QUOTES
+===================================================== */
+const QUOTES = [
+  {text:"I've missed more than 9,000 shots in my career. I've lost almost 300 games. Twenty-six times I've been trusted to take the game-winning shot and missed. I've failed over and over again in my life. And that is why I succeed.",attribution:"Michael Jordan"},
+  {text:"Talent wins games, but teamwork and intelligence win championships.",attribution:"Michael Jordan"},
+  {text:"The minute you get away from fundamentals — whether it's proper technique, work ethic, or mental preparation — the bottom can fall out of your game.",attribution:"Michael Jordan"},
+  {text:"I never looked at the consequences of missing a big shot. When you think about the consequences, you always think of a negative result.",attribution:"Michael Jordan"},
+  {text:"Some people want it to happen, some wish it would happen, others make it happen.",attribution:"Michael Jordan"},
+  {text:"Everything negative — pressure, challenges — is all an opportunity for me to rise.",attribution:"Kobe Bryant"},
+  {text:"The most important thing is to try and inspire people so that they can be great in whatever they want to do.",attribution:"Kobe Bryant"},
+  {text:"I have nothing in common with lazy people who blame others for their lack of success.",attribution:"Kobe Bryant"},
+  {text:"Once you know what failure feels like, determination chases success.",attribution:"Kobe Bryant"},
+  {text:"If you're afraid to fail, then you're probably going to fail.",attribution:"Kobe Bryant"},
+  {text:"The beauty in being blessed with talent is rising above doubters to create a beautiful moment.",attribution:"Kobe Bryant"},
+  {text:"I like criticism. It makes you strong.",attribution:"LeBron James"},
+  {text:"You have to be able to accept failure to get better.",attribution:"LeBron James"},
+  {text:"Don't be afraid of failure. This is the way to succeed.",attribution:"LeBron James"},
+  {text:"I love being different. I love being the person that can go out and do things people say can't be done.",attribution:"LeBron James"},
+  {text:"Ask not what your teammates can do for you. Ask what you can do for your teammates.",attribution:"Magic Johnson"},
+  {text:"I tell kids to pursue their basketball dreams, but I tell them to not let that be their only dream.",attribution:"Magic Johnson"},
+  {text:"All kids need is a little help, a little hope, and somebody who believes in them.",attribution:"Magic Johnson"},
+  {text:"First master the fundamentals.",attribution:"Larry Bird"},
+  {text:"Push yourself again and again. Don't give an inch until the final buzzer sounds.",attribution:"Larry Bird"},
+  {text:"I've got a theory that if you give 100% all of the time, somehow things will work out in the end.",attribution:"Larry Bird"},
+  {text:"Your mind is what makes everything else work.",attribution:"Kareem Abdul-Jabbar"},
+  {text:"I try to do the right thing at the right time. They may just be little things, but usually they make the difference between winning and losing.",attribution:"Kareem Abdul-Jabbar"},
+  {text:"One man can be a crucial ingredient on a team, but one man cannot make a team.",attribution:"Kareem Abdul-Jabbar"},
+  {text:"Hard work beats talent when talent fails to work hard.",attribution:"Kevin Durant"},
+  {text:"Good things come to those who work.",attribution:"Kevin Durant"},
+  {text:"Success is not an accident. Success is actually a choice.",attribution:"Stephen Curry"},
+  {text:"I don't need too many things. I just want to be in the moment.",attribution:"Stephen Curry"},
+  {text:"Good. Better. Best. Never let it rest. Until your good is better and your better is best.",attribution:"Tim Duncan"},
+  {text:"Excellence is not a singular act but a habit. You are what you repeatedly do.",attribution:"Shaquille O'Neal"},
+  {text:"I'm not out there to prove anything to anybody. I'm out there to play the game I love.",attribution:"Dwyane Wade"},
+  {text:"I want to be the guy who can make a difference in the fourth quarter.",attribution:"Dirk Nowitzki"},
+  {text:"The most important measure of how good a game I played was how much better I'd made my teammates play.",attribution:"Bill Russell"},
+  {text:"Concentration and mental toughness are the margins of victory.",attribution:"Bill Russell"},
+  {text:"I know I'm never as good or bad as any single performance. I've never believed my critics or my worshippers.",attribution:"Charles Barkley"},
+  {text:"The only difference between a good shot and a bad shot is if it goes in or not.",attribution:"Isiah Thomas"},
+  {text:"Fun is fun. Winning is winning.",attribution:"Kawhi Leonard"},
+  {text:"If you're the smartest person in the room, you're in the wrong room.",attribution:"Chris Paul"},
+  {text:"The strength of the team is each individual member. The strength of each member is the team.",attribution:"Phil Jackson"},
+  {text:"Not only is there more to life than basketball, there's a lot more to basketball than basketball.",attribution:"Phil Jackson"},
+  {text:"Wisdom is always an overmatch for strength.",attribution:"Phil Jackson"},
+  {text:"Nobody cares. Work harder.",attribution:"Gregg Popovich"},
+  {text:"We're going to do what we do.",attribution:"Gregg Popovich"},
+  {text:"There are only two options regarding commitment. You're either in or you're out. There's no such thing as life in between.",attribution:"Pat Riley"},
+  {text:"Excellence is the gradual result of always striving to do better.",attribution:"Pat Riley"},
+  {text:"A champion needs a motivation above and beyond winning.",attribution:"Pat Riley"},
+  {text:"It's what you learn after you know it all that counts.",attribution:"John Wooden"},
+  {text:"Failure is not fatal, but failure to change might be.",attribution:"John Wooden"},
+  {text:"Make each day your masterpiece.",attribution:"John Wooden"},
+  {text:"Do not let what you cannot do interfere with what you can do.",attribution:"John Wooden"},
+  {text:"Things turn out best for the people who make the best of the way things turn out.",attribution:"John Wooden"},
+  {text:"Two are better than one if two act as one.",attribution:"Mike Krzyzewski"},
+  {text:"Effective teamwork begins and ends with communication.",attribution:"Mike Krzyzewski"},
+  {text:"Adversity is our friend. We can become great when things are not going well.",attribution:"Mike Krzyzewski"},
+  {text:"Ubuntu — I am, because we are.",attribution:"Doc Rivers"},
+  {text:"The only way to beat a team is together.",attribution:"Doc Rivers"},
+  {text:"Great teams are built on trust, accountability, and belief in each other.",attribution:"Rick Carlisle"},
+  {text:"Float like a butterfly, sting like a bee.",attribution:"Muhammad Ali"},
+  {text:"I am the greatest. I said that even before I knew I was.",attribution:"Muhammad Ali"},
+  {text:"It's not bragging if you can back it up.",attribution:"Muhammad Ali"},
+  {text:"Don't quit. Suffer now and live the rest of your life as a champion.",attribution:"Muhammad Ali"},
+  {text:"Impossible is just a big word thrown around by small men who find it easier to live in the world they've been given than to explore the power they have to change it.",attribution:"Muhammad Ali"},
+  {text:"Winning isn't everything, but wanting to win is.",attribution:"Vince Lombardi"},
+  {text:"The only place success comes before work is in the dictionary.",attribution:"Vince Lombardi"},
+  {text:"Perfection is not attainable, but if we chase perfection we can catch excellence.",attribution:"Vince Lombardi"},
+  {text:"The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack in will.",attribution:"Vince Lombardi"},
+  {text:"A lot of times I find that people who are blessed with the most talent don't ever develop that attitude, and the ones who aren't blessed in that way are the most determined.",attribution:"Tom Brady"},
+  {text:"Do whatever it takes to win.",attribution:"Tom Brady"},
+  {text:"I really think a champion is defined not by their wins but by how they can recover when they fall.",attribution:"Serena Williams"},
+  {text:"You have to believe in yourself when no one else does. That makes you a winner right there.",attribution:"Serena Williams"},
+  {text:"You miss 100% of the shots you don't take.",attribution:"Wayne Gretzky"},
+  {text:"Skate to where the puck is going, not where it has been.",attribution:"Wayne Gretzky"},
+  {text:"The more difficult the victory, the greater the happiness in winning.",attribution:"Pelé"},
+  {text:"Success is no accident. It is hard work, perseverance, learning, studying, sacrifice, and most of all, love of what you are doing.",attribution:"Pelé"},
+  {text:"I am a member of a team, and I rely on the team, I defer to it and sacrifice for it, because the team, not the individual, is the ultimate champion.",attribution:"Mia Hamm"},
+  {text:"Failure happens all the time. It happens every day in practice. What makes you better is how you react to it.",attribution:"Mia Hamm"},
+  {text:"You can't put a limit on anything. The more you dream, the farther you get.",attribution:"Michael Phelps"},
+  {text:"I don't think limits.",attribution:"Usain Bolt"},
+  {text:"Champions keep playing until they get it right.",attribution:"Billie Jean King"},
+];
+
+let qSessions=[], qCurrent=0, qNextRunIdx=0;
+
+function qGetCustom(){try{return JSON.parse(localStorage.getItem('rwe_quotes')||'[]')}catch{return[]}}
+function qSaveCustom(a){try{localStorage.setItem('rwe_quotes',JSON.stringify(a))}catch{}}
+function qAll(){return[...QUOTES,...qGetCustom()]}
+
+function qBuildSessions(){
+  const list=[], today=new Date(); today.setHours(0,0,0,0);
+  const s=new Date(today); s.setFullYear(s.getFullYear()-2);
+  const e=new Date(today); e.setFullYear(e.getFullYear()+2);
+  for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
+    const dw=d.getDay();
+    if(dw===0||dw===3)list.push(new Date(d));
+  }
+  return list;
+}
+
+function qNextRun(sessions){
+  const today=new Date(); today.setHours(0,0,0,0);
+  for(let i=0;i<sessions.length;i++){if(sessions[i]>=today)return i;}
+  return sessions.length-1;
+}
+
+function qFmtDate(d){
+  const D=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  return D[d.getDay()]+' \u00b7 '+M[d.getMonth()]+' '+d.getDate();
+}
+
+function qInit(){
+  qSessions=qBuildSessions();
+  qNextRunIdx=qNextRun(qSessions);
+  qCurrent=qNextRunIdx;
+  qRender();
+}
+
+function qRender(){
+  const textEl=document.getElementById('qh-text');
+  const attrEl=document.getElementById('qh-attr');
+  if(!textEl) return;
+  textEl.style.opacity='0'; attrEl.style.opacity='0';
+  setTimeout(()=>{
+    const all=qAll(), q=all[qCurrent%all.length], d=qSessions[qCurrent], isNR=qCurrent===qNextRunIdx;
+    document.getElementById('qh-badge').style.display=isNR?'inline-flex':'none';
+    document.getElementById('qh-session').textContent=d?qFmtDate(d):'';
+    textEl.textContent=q?q.text:'';
+    attrEl.textContent=q?'\u2014 '+q.attribution:'';
+    document.getElementById('qh-counter').textContent='SESSION '+(qCurrent+1)+' \u00b7 '+qSessions.length+' TOTAL';
+    document.getElementById('qh-prev').disabled=qCurrent===0;
+    document.getElementById('qh-next').disabled=qCurrent===qSessions.length-1;
+    textEl.style.opacity='1'; attrEl.style.opacity='1';
+  },270);
+}
+
+function qNav(dir){
+  const n=qCurrent+dir;
+  if(n<0||n>=qSessions.length)return;
+  qCurrent=n; qRender();
+}
+
+function renderAdminQuotes(){
+  const custom=qGetCustom(), all=qAll(), baseN=QUOTES.length;
+  const countEl=document.getElementById('admin-quotes-count');
+  if(countEl) countEl.textContent=all.length+' total \u00b7 '+baseN+' built-in \u00b7 '+custom.length+' custom';
+  const listEl=document.getElementById('admin-quotes-list');
+  if(!listEl) return;
+  listEl.innerHTML=all.map((q,i)=>{
+    const d=qSessions[i%qSessions.length];
+    const isNR=(i%qSessions.length)===qNextRunIdx;
+    const isCustom=i>=baseN;
+    const preview=q.text.length>80?q.text.slice(0,80)+'\u2026':q.text;
+    return '<div style="display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--rim2);flex-wrap:wrap">'+
+      '<div style="font-family:var(--fd);font-size:22px;color:var(--or);opacity:.28;min-width:28px;line-height:1;padding-top:2px">'+(i+1)+'</div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:13px;color:var(--ink);line-height:1.5;margin-bottom:3px">'+preview+'</div>'+
+        '<div style="font-size:11px;color:var(--ink2);font-weight:600;letter-spacing:.08em;text-transform:uppercase">'+q.attribution+'</div>'+
+        '<div style="font-size:10px;color:'+(isNR?'var(--or)':'var(--ink3)')+';margin-top:3px;letter-spacing:.06em">'+(d?qFmtDate(d):'')+(isNR?' \u26a1 NEXT RUN':'')+'</div>'+
+      '</div>'+
+      (isCustom
+        ?'<button class="btn btn-xs btn-re" onclick="deleteCustomQuote('+(i-baseN)+')">Remove</button>'
+        :'<span style="font-size:10px;color:var(--ink3);padding-top:4px">built-in</span>')+
+    '</div>';
+  }).join('');
+}
+
+function addCustomQuote(){
+  const text=(document.getElementById('new-quote-text')?.value||'').trim();
+  const attr=(document.getElementById('new-quote-attr')?.value||'').trim();
+  if(!text||!attr){toast('Enter both the quote and the attribution.','err');return;}
+  const custom=qGetCustom(); custom.push({text,attribution:attr}); qSaveCustom(custom);
+  document.getElementById('new-quote-text').value='';
+  document.getElementById('new-quote-attr').value='';
+  renderAdminQuotes(); qRender(); toast('Quote added! \u2713','ok');
+}
+
+function deleteCustomQuote(ci){
+  const custom=qGetCustom(), q=custom[ci];
+  if(!confirm('Remove this quote?\n\n"'+q.text.slice(0,80)+(q.text.length>80?'\u2026':'')+'"'))return;
+  custom.splice(ci,1); qSaveCustom(custom);
+  renderAdminQuotes(); qRender(); toast('Quote removed.','');
+}
+
+/* =====================================================
+   BOOT
+===================================================== */
+async function init(){
+  qInit();
+  if(!CONFIGURED){showPage('setup');renderNav();return;}
   showLoading('games-list');
-  try {
+  try{
     await loadAll();
-    const savedEmail = localStorage.getItem('rwe_email');
-    if (savedEmail) CU = members.find(m => m.email === savedEmail) || null;
-    renderNav();
-    renderGames();
-    subscribeRealtime();
-  } catch(e) {
-    document.getElementById('games-list').innerHTML =
-      `<div class="loading-wrap"><div style="color:var(--re)">⚠ Could not connect to database.<br><small>${e.message}</small></div></div>`;
+    const saved=localStorage.getItem('rwe_email');
+    if(saved) CU=members.find(m=>m.email===saved)||null;
+    renderNav(); renderGames(); subscribeRealtime();
+  }catch(e){
+    document.getElementById('games-list').innerHTML=
+      '<div class="loading-wrap"><div style="color:var(--re)">\u26a0 Could not connect to database.<br><small>'+e.message+'</small></div></div>';
     renderNav();
   }
   showPage('home');
 }
 
-// ══════════════════════════════════════════════════
-// DATA LOADING
-// ══════════════════════════════════════════════════
-async function loadAll() {
-  const [mRes, gRes, rRes, wRes] = await Promise.all([
+async function loadAll(){
+  const[mRes,gRes,rRes,wRes]=await Promise.all([
     sb.from('members').select('*').order('last_name'),
-    sb.from('games').select('*')   .gte('game_date', new Date().toISOString().split('T')[0])   .order('game_date', { ascending: true }),
+    sb.from('games').select('*').gte('game_date',new Date().toISOString().split('T')[0]).order('game_date',{ascending:true}),
     sb.from('roster').select('*').order('created_at'),
     sb.from('waitlist').select('*').order('created_at'),
   ]);
-    const hRes = await sb.from('games').select('*')
-    .lt('game_date', new Date().toISOString().split('T')[0])
-    .order('game_date', { ascending: false });
-  window.pastGames = hRes.data || [];
-  if (mRes.error) throw mRes.error;
-  members = mRes.data || [];
-  const roster   = rRes.data || [];
-  const waitlist = wRes.data || [];
-  games = (gRes.data || []).map(g => ({
-    ...g,
-    roster:   roster.filter(r => r.game_id === g.id),
-    waitlist: waitlist.filter(w => w.game_id === g.id),
-  }));
-  // Refresh CU in case admin flag changed
-  if (CU) CU = members.find(m => m.id === CU.id) || CU;
+  const hRes=await sb.from('games').select('*').lt('game_date',new Date().toISOString().split('T')[0]).order('game_date',{ascending:false});
+  window.pastGames=hRes.data||[];
+  if(mRes.error)throw mRes.error;
+  members=mRes.data||[];
+  const roster=rRes.data||[], waitlist=wRes.data||[];
+  games=(gRes.data||[]).map(g=>({...g,roster:roster.filter(r=>r.game_id===g.id),waitlist:waitlist.filter(w=>w.game_id===g.id)}));
+  if(CU) CU=members.find(m=>m.id===CU.id)||CU;
 }
 
-async function reload() {
-  await loadAll();
-  renderGames();
-  if (document.getElementById('page-admin').classList.contains('active')) renderAdmin();
-  if (document.getElementById('page-payments').classList.contains('active')) renderPayments();
+async function reload(){
+  await loadAll(); renderGames();
+  if(document.getElementById('page-admin').classList.contains('active'))renderAdmin();
+  if(document.getElementById('page-payments').classList.contains('active'))renderPayments();
 }
 
-// ══════════════════════════════════════════════════
-// REALTIME
-// ══════════════════════════════════════════════════
-function subscribeRealtime() {
+function subscribeRealtime(){
   sb.channel('db')
-    .on('postgres_changes', { event:'*', schema:'public', table:'roster'   }, reload)
-    .on('postgres_changes', { event:'*', schema:'public', table:'waitlist' }, reload)
-    .on('postgres_changes', { event:'*', schema:'public', table:'games'    }, reload)
+    .on('postgres_changes',{event:'*',schema:'public',table:'roster'},reload)
+    .on('postgres_changes',{event:'*',schema:'public',table:'waitlist'},reload)
+    .on('postgres_changes',{event:'*',schema:'public',table:'games'},reload)
     .subscribe();
 }
 
-// ══════════════════════════════════════════════════
-// NAV
-// ══════════════════════════════════════════════════
-function goHome() { showPage('home'); renderGames(); }
+function goHome(){showPage('home');renderGames();}
 
-function renderNav() {
-  const el = document.getElementById('nav-links');
-  if (!CONFIGURED) { el.innerHTML = ''; return; }
-  if (!CU) {
-    el.innerHTML = `
-      <button class="btn btn-gh btn-sm" onclick="showPage('login')">Sign In</button>
-      <button class="btn btn-or btn-sm" onclick="showPage('register')">Register</button>`;
-  } else {
-    el.innerHTML = `
-      <button class="btn btn-gh btn-sm" onclick="renderPayments();showPage('payments')">💳 My Sessions</button>
-      ${CU.is_admin ? `<button class="btn btn-gh btn-sm" onclick="renderAdmin();showPage('admin')">⚙ Admin</button>` : ''}
-      <span class="nav-user">${CU.first_name}</span>
-      <button class="btn btn-gh btn-sm" onclick="signOut()">Out</button>`;
+function renderNav(){
+  const el=document.getElementById('nav-links');
+  if(!CONFIGURED){el.innerHTML='';return;}
+  if(!CU){
+    el.innerHTML='<button class="btn btn-gh btn-sm" onclick="showPage(\'login\')">Sign In</button><button class="btn btn-or btn-sm" onclick="showPage(\'register\')">Register</button>';
+  }else{
+    el.innerHTML='<button class="btn btn-gh btn-sm" onclick="renderPayments();showPage(\'payments\')">&#128179; My Sessions</button>'+
+      (CU.is_admin?'<button class="btn btn-gh btn-sm" onclick="renderAdmin();showPage(\'admin\')">&#9881; Admin</button>':'')+
+      '<span class="nav-user">'+CU.first_name+'</span><button class="btn btn-gh btn-sm" onclick="signOut()">Out</button>';
   }
 }
 
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
   window.scrollTo(0,0);
 }
 
-function showLoading(id) {
-  const el = document.getElementById(id);
-  if (el) el.innerHTML = '<div class="loading-wrap"><div class="spinner"></div><span>Loading…</span></div>';
-}
+function showLoading(id){const el=document.getElementById(id);if(el)el.innerHTML='<div class="loading-wrap"><div class="spinner"></div><span>Loading\u2026</span></div>';}
 
-// ══════════════════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════════════════
-async function submitReg() {
-  const first = v('reg-first'), last = v('reg-last');
-  const email = v('reg-email').toLowerCase(), phone = v('reg-phone');
-  let ok = true;
-  if (!first) { se('err-rf'); ok=false; }
-  if (!last)  { se('err-rl'); ok=false; }
-  if (!email || !email.includes('@')) { se('err-re'); ok=false; }
-  if (!phone) { se('err-rp'); ok=false; }
-  if (!ok) return;
-  if (members.find(m => m.email === email)) { toast('Account already exists for that email.','err'); return; }
-
-  setLoading('reg-btn', true);
-  const { data, error } = await sb.from('members').insert({
-    first_name: first, last_name: last, email, phone, is_admin: false
-  }).select().single();
-  setLoading('reg-btn', false);
-
-  if (error) { toast('Error: ' + error.message, 'err'); return; }
-  await loadAll();
-  CU = data;
-  localStorage.setItem('rwe_email', email);
+async function submitReg(){
+  const first=v('reg-first'),last=v('reg-last'),email=v('reg-email').toLowerCase(),phone=v('reg-phone');
+  let ok=true;
+  if(!first){se('err-rf');ok=false;}
+  if(!last){se('err-rl');ok=false;}
+  if(!email||!email.includes('@')){se('err-re');ok=false;}
+  if(!phone){se('err-rp');ok=false;}
+  if(!ok)return;
+  if(members.find(m=>m.email===email)){toast('Account already exists for that email.','err');return;}
+  setLoading('reg-btn',true);
+  const{data,error}=await sb.from('members').insert({first_name:first,last_name:last,email,phone,is_admin:false}).select().single();
+  setLoading('reg-btn',false);
+  if(error){toast('Error: '+error.message,'err');return;}
+  await loadAll(); CU=data; localStorage.setItem('rwe_email',email);
   renderNav(); renderGames(); showPage('home');
-  toast(`Welcome to the run, ${first}! 🏀`, 'ok');
+  toast('Welcome to the run, '+first+'! \uD83C\uDFC0','ok');
 }
 
-async function submitLogin() {
-  const email = v('login-email').toLowerCase().trim();
-  setLoading('login-btn', true);
-  await loadAll(); // refresh members list
-  setLoading('login-btn', false);
-  const user = members.find(m => m.email === email);
-  if (!user) { se('err-login'); return; }
-  CU = user;
-  localStorage.setItem('rwe_email', email);
-  document.getElementById('err-login').style.display = 'none';
+async function submitLogin(){
+  const email=v('login-email').toLowerCase().trim();
+  setLoading('login-btn',true); await loadAll(); setLoading('login-btn',false);
+  const user=members.find(m=>m.email===email);
+  if(!user){se('err-login');return;}
+  CU=user; localStorage.setItem('rwe_email',email);
+  document.getElementById('err-login').style.display='none';
   renderNav(); renderGames(); showPage('home');
-  toast(`Welcome back, ${user.first_name}! 🏀`, 'ok');
+  toast('Welcome back, '+user.first_name+'! \uD83C\uDFC0','ok');
 }
 
-function signOut() {
-  CU = null; localStorage.removeItem('rwe_email');
-  renderNav(); renderGames(); showPage('home');
-  toast('Signed out.', '');
+function signOut(){CU=null;localStorage.removeItem('rwe_email');renderNav();renderGames();showPage('home');toast('Signed out.','');}
+
+function getOwed(memberId){
+  let o=0;
+  games.forEach(g=>{const e=g.roster.find(r=>r.member_id===memberId);if(e&&e.attended&&!e.paid)o++;});
+  return o;
 }
 
-// ══════════════════════════════════════════════════
-// BALANCE HELPER
-// ══════════════════════════════════════════════════
-function getOwed(memberId) {
-  let owed = 0;
-  games.forEach(g => {
-    const e = g.roster.find(r => r.member_id === memberId);
-    if (e && e.attended && !e.paid) owed++;
-  });
-  return owed;
-}
-
-// ══════════════════════════════════════════════════
-// RENDER GAMES
-// ══════════════════════════════════════════════════
-function renderGames() {
-  const el = document.getElementById('games-list');
-  if (!el) return;
-  if (!games.length) {
-    el.innerHTML = '<div style="padding:36px 0;text-align:center;color:var(--ink3);font-size:13px">No games scheduled yet — check back soon.</div>';
-    return;
-  }
-  el.innerHTML = games.map(g => gameCard(g)).join('');
-const hist = document.getElementById('history-list');
-if (hist) {
-  if (!window.pastGames?.length) {
-    hist.innerHTML = '<div style="font-size:13px;color:var(--ink3)">No past games yet.</div>';
-  } else {
-    hist.innerHTML = window.pastGames.map(g => `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--s1);border:1px solid var(--rim);border-radius:10px;margin-bottom:8px;opacity:0.6">
-        <div>
-          <div style="font-size:14px;font-weight:600">${g.day_short} · ${g.date_str}</div>
-          <div style="font-size:11px;color:var(--ink3);margin-top:2px">${g.time_str}</div>
-        </div>
-        <div style="font-size:12px;color:var(--ink3)">${g.max_players} max</div>
-      </div>`).join('');
-    }
+function renderGames(){
+  const el=document.getElementById('games-list');
+  if(!el)return;
+  if(!games.length){el.innerHTML='<div style="padding:36px 0;text-align:center;color:var(--ink3);font-size:13px">No games scheduled yet \u2014 check back soon.</div>';return;}
+  el.innerHTML=games.map(g=>gameCard(g)).join('');
+  const hist=document.getElementById('history-list');
+  if(hist){
+    if(!window.pastGames?.length){hist.innerHTML='<div style="font-size:13px;color:var(--ink3)">No past games yet.</div>';}
+    else{hist.innerHTML=window.pastGames.map(g=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--s1);border:1px solid var(--rim);border-radius:10px;margin-bottom:8px;opacity:0.6"><div><div style="font-size:14px;font-weight:600">'+g.day_short+' \u00b7 '+g.date_str+'</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">'+g.time_str+'</div></div><div style="font-size:12px;color:var(--ink3)">'+g.max_players+' max</div></div>').join('');}
   }
 }
-function gameCard(game) {
-  const n = game.roster.length, max = game.max_players, full = n >= max;
-  const pct = Math.min((n/max)*100, 100);
-  const barCol = pct < 45 ? 'var(--gr)' : pct < 80 ? 'var(--go)' : 'var(--or)';
 
-  // Balance banner
-  let balBanner = '';
-  if (CU) {
-    const owed = getOwed(CU.id);
-    if (owed > 0) {
-      balBanner = `<div class="bal-banner owe">
-        <span class="bbi">⚠️</span>
-        <div class="bbt">
-          <strong>You owe $${owed * 11} from ${owed} session${owed>1?'s':''}</strong>
-          <span>Pay <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--re);font-weight:700">@Ed-Arcinue</a> · Ed will mark you paid.</span>
-        </div>
-      </div>`;
-    }
-  }
-
-  // Roster rows
-  let rosterRows = game.roster.map((e, i) => playerRowHTML(e, i, game, false)).join('');
-  if (!rosterRows) rosterRows = '<div style="font-size:12px;color:var(--ink3);padding:5px 0 2px">No one yet — be the first!</div>';
-
-  // Waitlist
-  let wlSection = '';
-  if (game.waitlist.length) {
-    const wlRows = game.waitlist.map((e, i) => playerRowHTML(e, i, game, true)).join('');
-    wlSection = `<div class="wl-div"><span>⏳ Waitlist (${game.waitlist.length})</span></div>${wlRows}`;
-  }
-
-  // Add input or sign-in prompt
-  let addSection = '';
-  if (CU) {
-    const ph = full ? 'Add to waitlist…' : 'Add a name…';
-    const lbl = full ? '⏳' : '🏀 Add';
-    addSection = `<div class="add-row">
-      <input class="add-input" id="add-${game.id}" placeholder="${ph}" maxlength="40"
-        onkeydown="if(event.key==='Enter')addName('${game.id}')">
-      <button class="btn btn-or" onclick="addName('${game.id}')" style="padding:10px 16px">${lbl}</button>
-    </div>`;
-  } else {
-    addSection = `<div style="margin-top:14px;padding:10px 14px;background:var(--s2);border-radius:9px;border:1px solid var(--rim);font-size:13px;color:var(--ink2)">
-      <a href="#" class="al" onclick="showPage('login');return false">Sign in</a> or
-      <a href="#" class="al" onclick="showPage('register');return false">register</a> to add names.
-    </div>`;
-  }
-
-  return `<div class="card">
-    <div class="card-head">
-      <div><div class="game-day">${game.day_short}</div><div class="game-date">${game.date_str}</div></div>
-      <div class="time-badge">${game.time_str}</div>
-    </div>
-    <div class="card-body">
-      ${balBanner}
-      <div class="roster-meta">
-        <div class="roster-label">Confirmed · ${n}/${max}</div>
-        ${game.waitlist.length ? `<div style="font-size:11px;color:var(--go);font-weight:600">${game.waitlist.length} waitlisted</div>` : ''}
-      </div>
-      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${barCol}"></div></div>
-      ${n < 6 ? `<div style="font-size:12px;color:var(--go);margin-bottom:10px">⚠ Need ${6-n} more for a full run</div>` : ''}
-      ${rosterRows}
-      ${wlSection}
-      ${addSection}
-      <div class="ext-links">
-        <a href="https://venmo.com/Ed-Arcinue" target="_blank" class="ext-link lv">💸 Pay @Ed-Arcinue $11</a>
-        <a href="https://shoot360-prod.saloncloudsplus.io/ghl/athlete-info" target="_blank" class="ext-link lw">📋 Sign Shoot 360 Waiver</a>
-      </div>
-    </div>
-  </div>`;
+function gameCard(game){
+  const n=game.roster.length,max=game.max_players,full=n>=max;
+  const pct=Math.min((n/max)*100,100);
+  const barCol=pct<45?'var(--gr)':pct<80?'var(--go)':'var(--or)';
+  let balBanner='';
+  if(CU){const owed=getOwed(CU.id);if(owed>0)balBanner='<div class="bal-banner owe"><span class="bbi">\u26a0\uFE0F</span><div class="bbt"><strong>You owe $'+(owed*11)+' from '+owed+' session'+(owed>1?'s':'')+'</strong><span>Pay <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--re);font-weight:700">@Ed-Arcinue</a> \u00b7 Ed will mark you paid.</span></div></div>';}
+  let rosterRows=game.roster.map((e,i)=>playerRowHTML(e,i,game,false)).join('');
+  if(!rosterRows)rosterRows='<div style="font-size:12px;color:var(--ink3);padding:5px 0 2px">No one yet \u2014 be the first!</div>';
+  let wlSection='';
+  if(game.waitlist.length){const wlRows=game.waitlist.map((e,i)=>playerRowHTML(e,i,game,true)).join('');wlSection='<div class="wl-div"><span>\u23f3 Waitlist ('+game.waitlist.length+')</span></div>'+wlRows;}
+  let addSection='';
+  if(CU){const ph=full?'Add to waitlist\u2026':'Add a name\u2026';const lbl=full?'\u23f3':'\uD83C\uDFC0 Add';addSection='<div class="add-row"><input class="add-input" id="add-'+game.id+'" placeholder="'+ph+'" maxlength="40" onkeydown="if(event.key===\'Enter\')addName(\''+game.id+'\')"><button class="btn btn-or" onclick="addName(\''+game.id+'\')" style="padding:10px 16px">'+lbl+'</button></div>';}
+  else{addSection='<div style="margin-top:14px;padding:10px 14px;background:var(--s2);border-radius:9px;border:1px solid var(--rim);font-size:13px;color:var(--ink2)"><a href="#" class="al" onclick="showPage(\'login\');return false">Sign in</a> or <a href="#" class="al" onclick="showPage(\'register\');return false">register</a> to add names.</div>';}
+  return '<div class="card"><div class="card-head"><div><div class="game-day">'+game.day_short+'</div><div class="game-date">'+game.date_str+'</div></div><div class="time-badge">'+game.time_str+'</div></div><div class="card-body">'+balBanner+'<div class="roster-meta"><div class="roster-label">Confirmed \u00b7 '+n+'/'+max+'</div>'+(game.waitlist.length?'<div style="font-size:11px;color:var(--go);font-weight:600">'+game.waitlist.length+' waitlisted</div>':'')+' </div><div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+barCol+'"></div></div>'+(n<6?'<div style="font-size:12px;color:var(--go);margin-bottom:10px">\u26a0 Need '+(6-n)+' more for a full run</div>':'')+rosterRows+wlSection+addSection+'<div class="ext-links"><a href="https://venmo.com/Ed-Arcinue" target="_blank" class="ext-link lv">\uD83D\uDCB8 Pay @Ed-Arcinue $11</a><a href="https://shoot360-prod.saloncloudsplus.io/ghl/athlete-info" target="_blank" class="ext-link lw">\uD83D\uDCCB Sign Shoot 360 Waiver</a></div></div></div>';
 }
 
-function playerRowHTML(entry, index, game, isWl) {
-  const isMe = CU && entry.member_id === CU.id;
-  const initials = entry.display_name.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  const pos = isWl ? `Wait #${index+1}` : `#${index+1}`;
-  const tbl = isWl ? 'waitlist' : 'roster';
-
-  let badges = '';
-  if (isMe) badges += `<span class="badge b-you">You</span>`;
-  if (entry.entry_type === 'guest') badges += `<span class="badge b-guest">Guest</span>`;
-  if (isWl) badges += `<span class="badge b-wl">Waitlist</span>`;
-  if (!isWl && entry.attended) badges += `<span class="badge b-att">Attended ✓</span>`;
-  if (!isWl && entry.paid)     badges += `<span class="badge b-paid">Paid ✓</span>`;
-  if (!isWl && entry.attended && !entry.paid) badges += `<span class="badge b-owe">Owes $11</span>`;
-
-  const removeBtn = CU
-    ? `<button class="btn btn-xs btn-re" onclick="startCancel('${game.id}','${entry.id}','${tbl}','${entry.display_name.replace(/'/g,"\\'")}')">Remove</button>`
-    : '';
-
-  return `<div class="player-row${isMe?' you':''}${isWl?' wl':''}">
-    <div class="av">${initials}</div>
-    <div class="pinfo"><div class="pname">${entry.display_name}</div><div class="psub">${pos}</div></div>
-    <div class="pbadges">${badges}</div>
-    ${removeBtn}
-  </div>`;
+function playerRowHTML(entry,index,game,isWl){
+  const isMe=CU&&entry.member_id===CU.id;
+  const initials=entry.display_name.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const pos=isWl?'Wait #'+(index+1):'#'+(index+1);
+  const tbl=isWl?'waitlist':'roster';
+  let badges='';
+  if(isMe)badges+='<span class="badge b-you">You</span>';
+  if(entry.entry_type==='guest')badges+='<span class="badge b-guest">Guest</span>';
+  if(isWl)badges+='<span class="badge b-wl">Waitlist</span>';
+  if(!isWl&&entry.attended)badges+='<span class="badge b-att">Attended \u2713</span>';
+  if(!isWl&&entry.paid)badges+='<span class="badge b-paid">Paid \u2713</span>';
+  if(!isWl&&entry.attended&&!entry.paid)badges+='<span class="badge b-owe">Owes $11</span>';
+  const removeBtn=CU?'<button class="btn btn-xs btn-re" onclick="startCancel(\''+game.id+'\',\''+entry.id+'\',\''+tbl+'\',\''+entry.display_name.replace(/'/g,"\\'")+'\')">Remove</button>':'';
+  return '<div class="player-row'+(isMe?' you':'')+(isWl?' wl':'')+'"><div class="av">'+initials+'</div><div class="pinfo"><div class="pname">'+entry.display_name+'</div><div class="psub">'+pos+'</div></div><div class="pbadges">'+badges+'</div>'+removeBtn+'</div>';
 }
 
-// ══════════════════════════════════════════════════
-// ADD NAME
-// ══════════════════════════════════════════════════
-async function addName(gameId) {
-  if (!CU) { showPage('login'); return; }
-  const inp = document.getElementById('add-' + gameId);
-  const name = inp ? inp.value.trim() : '';
-  if (!name) { if(inp){inp.style.borderColor='var(--re)';setTimeout(()=>inp.style.borderColor='',1400);} return; }
-
-  const game = games.find(g => g.id === gameId);
-  if (!game) return;
-
-  const allNames = [...game.roster, ...game.waitlist].map(e => e.display_name.toLowerCase());
-  if (allNames.includes(name.toLowerCase())) { toast(`${name} is already on the list!`, 'err'); return; }
-
-  const matchedMember = members.find(m => `${m.first_name} ${m.last_name}`.toLowerCase() === name.toLowerCase());
-  const entryData = {
-    game_id:      gameId,
-    display_name: name,
-    member_id:    matchedMember ? matchedMember.id : null,
-    added_by_id:  CU.id,
-    entry_type:   matchedMember ? 'member' : 'guest',
-  };
-
-  const full = game.roster.length >= game.max_players;
-  const table = full ? 'waitlist' : 'roster';
-
-  // Disable input while saving
-  if (inp) inp.disabled = true;
-  const { error } = await sb.from(table).insert(entryData);
-  if (inp) { inp.disabled = false; inp.value = ''; }
-
-  if (error) { toast('Error: ' + error.message, 'err'); return; }
-  // Realtime will trigger reload, but also do it manually for speed
+async function addName(gameId){
+  if(!CU){showPage('login');return;}
+  const inp=document.getElementById('add-'+gameId);
+  const name=inp?inp.value.trim():'';
+  if(!name){if(inp){inp.style.borderColor='var(--re)';setTimeout(()=>inp.style.borderColor='',1400);}return;}
+  const game=games.find(g=>g.id===gameId);if(!game)return;
+  const allNames=[...game.roster,...game.waitlist].map(e=>e.display_name.toLowerCase());
+  if(allNames.includes(name.toLowerCase())){toast(name+' is already on the list!','err');return;}
+  const matchedMember=members.find(m=>(m.first_name+' '+m.last_name).toLowerCase()===name.toLowerCase());
+  const entryData={game_id:gameId,display_name:name,member_id:matchedMember?matchedMember.id:null,added_by_id:CU.id,entry_type:matchedMember?'member':'guest'};
+  const full=game.roster.length>=game.max_players;
+  const table=full?'waitlist':'roster';
+  if(inp)inp.disabled=true;
+  const{error}=await sb.from(table).insert(entryData);
+  if(inp){inp.disabled=false;inp.value='';}
+  if(error){toast('Error: '+error.message,'err');return;}
   await reload();
-  toast(full
-    ? `⏳ ${name} added to waitlist (#${game.waitlist.length + 1}).`
-    : `🏀 ${name} is in! Pay $11 Venmo @Ed-Arcinue after playing.`,
-    'ok');
+  toast(full?'\u23f3 '+name+' added to waitlist (#'+(game.waitlist.length+1)+').':'\uD83C\uDFC0 '+name+' is in! Pay $11 Venmo @Ed-Arcinue after playing.','ok');
 }
 
-// ══════════════════════════════════════════════════
-// CANCEL / REMOVE
-// ══════════════════════════════════════════════════
-function startCancel(gameId, entryId, table, name) {
-  pendingCancel = { gameId, entryId, table };
-  const game = games.find(g => g.id === gameId);
-  let msg = `Remove ${name} from ${game.day_label} ${game.date_str}?`;
-  if (table === 'roster' && game.waitlist.length) msg += ` ${game.waitlist[0].display_name} will move up from the waitlist.`;
-  document.getElementById('cancel-sub').textContent = msg;
+function startCancel(gameId,entryId,table,name){
+  pendingCancel={gameId,entryId,table};
+  const game=games.find(g=>g.id===gameId);
+  let msg='Remove '+name+' from '+game.day_label+' '+game.date_str+'?';
+  if(table==='roster'&&game.waitlist.length)msg+=' '+game.waitlist[0].display_name+' will move up from the waitlist.';
+  document.getElementById('cancel-sub').textContent=msg;
   openModal('cancel-modal');
 }
 
-async function doCancel() {
-  const { gameId, entryId, table } = pendingCancel;
-  document.getElementById('cancel-confirm-btn').disabled = true;
-
-  const { error } = await sb.from(table).delete().eq('id', entryId);
-  if (error) { toast('Error: ' + error.message, 'err'); document.getElementById('cancel-confirm-btn').disabled = false; return; }
-
-  // Promote from waitlist if we removed from roster
-  if (table === 'roster') {
-    const game = games.find(g => g.id === gameId);
-    if (game && game.waitlist.length > 0) {
-      const next = game.waitlist[0];
-      await sb.from('roster').insert({
-        game_id:      next.game_id,
-        display_name: next.display_name,
-        member_id:    next.member_id,
-        added_by_id:  next.added_by_id,
-        entry_type:   next.entry_type,
-      });
-      await sb.from('waitlist').delete().eq('id', next.id);
-      toast(`Removed. ${next.display_name} moved up from the waitlist! 🏀`, 'ok');
-    } else {
-      toast('Player removed.', '');
-    }
-  } else {
-    toast('Removed from waitlist.', '');
-  }
-
-  document.getElementById('cancel-confirm-btn').disabled = false;
-  closeModal('cancel-modal');
-  await reload();
+async function doCancel(){
+  const{gameId,entryId,table}=pendingCancel;
+  document.getElementById('cancel-confirm-btn').disabled=true;
+  const{error}=await sb.from(table).delete().eq('id',entryId);
+  if(error){toast('Error: '+error.message,'err');document.getElementById('cancel-confirm-btn').disabled=false;return;}
+  if(table==='roster'){
+    const game=games.find(g=>g.id===gameId);
+    if(game&&game.waitlist.length>0){
+      const next=game.waitlist[0];
+      await sb.from('roster').insert({game_id:next.game_id,display_name:next.display_name,member_id:next.member_id,added_by_id:next.added_by_id,entry_type:next.entry_type});
+      await sb.from('waitlist').delete().eq('id',next.id);
+      toast('Removed. '+next.display_name+' moved up from the waitlist! \uD83C\uDFC0','ok');
+    }else{toast('Player removed.','');}
+  }else{toast('Removed from waitlist.','');}
+  document.getElementById('cancel-confirm-btn').disabled=false;
+  closeModal('cancel-modal'); await reload();
 }
 
-// ══════════════════════════════════════════════════
-// MY SESSIONS PAGE
-// ══════════════════════════════════════════════════
-function renderPayments() {
-  if (!CU) { showPage('login'); return; }
-  document.getElementById('pay-name-line').textContent = `${CU.first_name} ${CU.last_name} · ${CU.email}`;
-
-  // Build history
-  const history = [];
-  games.forEach(g => {
-    const e = g.roster.find(r => r.member_id === CU.id);
-    if (e) history.push({ dateStr:g.date_str, label:g.day_label, attended:e.attended, paid:e.paid });
-  });
-  history.sort((a,b) => {
-    // Sort by the game's position in the games array (newest first)
-    const ai = games.findIndex(g => g.date_str === a.dateStr);
-    const bi = games.findIndex(g => g.date_str === b.dateStr);
-    return bi - ai;
-  });
-
-  const owed = history.filter(h => h.attended && !h.paid).length;
-
-  const sumEl = document.getElementById('pay-summary');
-  if (owed > 0) {
-    sumEl.innerHTML = `<div class="bal-banner owe" style="margin-bottom:18px">
-      <span class="bbi">⚠️</span>
-      <div class="bbt">
-        <strong>Outstanding Balance: $${owed * 11}</strong>
-        <span>${owed} session${owed>1?'s':''} attended but not paid · <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--re);font-weight:700">Pay @Ed-Arcinue →</a></span>
-      </div>
-    </div>`;
-  } else if (history.length > 0) {
-    sumEl.innerHTML = `<div class="bal-banner ok" style="margin-bottom:18px">
-      <span class="bbi">✅</span>
-      <div class="bbt"><strong>All paid up!</strong><span>No outstanding balance.</span></div>
-    </div>`;
-  } else {
-    sumEl.innerHTML = `<div style="padding:20px;text-align:center;color:var(--ink3);font-size:13px">No sessions yet. Sign up for a game!</div>`;
-  }
-
-  const histEl = document.getElementById('pay-history');
-  if (!history.length) { histEl.innerHTML = ''; return; }
-
-  const rows = history.map(h => {
-    const attTag = h.attended
-      ? `<span class="tag-paid">Attended ✓</span>`
-      : `<span class="tag-pend">—</span>`;
-    const payTag = h.paid
-      ? `<span class="tag-paid">Paid ✓</span>`
-      : h.attended ? `<span class="tag-owe">Owes $11</span>` : `<span class="tag-pend">—</span>`;
-    const payLink = (!h.paid && h.attended)
-      ? `<a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--or);font-size:11px;font-weight:600;text-decoration:none">Pay →</a>` : '';
-    return `<div class="ph-row">
-      <div><div style="font-size:12px;font-weight:500">${h.dateStr}</div><div style="font-size:10px;color:var(--ink3);margin-top:1px">${h.label}</div></div>
-      <div>${attTag}</div>
-      <div>${payTag}</div>
-      <div>${payLink}</div>
-    </div>`;
+function renderPayments(){
+  if(!CU){showPage('login');return;}
+  document.getElementById('pay-name-line').textContent=CU.first_name+' '+CU.last_name+' \u00b7 '+CU.email;
+  const history=[];
+  games.forEach(g=>{const e=g.roster.find(r=>r.member_id===CU.id);if(e)history.push({dateStr:g.date_str,label:g.day_label,attended:e.attended,paid:e.paid});});
+  history.sort((a,b)=>{const ai=games.findIndex(g=>g.date_str===a.dateStr);const bi=games.findIndex(g=>g.date_str===b.dateStr);return bi-ai;});
+  const owed=history.filter(h=>h.attended&&!h.paid).length;
+  const sumEl=document.getElementById('pay-summary');
+  if(owed>0){sumEl.innerHTML='<div class="bal-banner owe" style="margin-bottom:18px"><span class="bbi">\u26a0\uFE0F</span><div class="bbt"><strong>Outstanding Balance: $'+(owed*11)+'</strong><span>'+owed+' session'+(owed>1?'s':'')+' attended but not paid \u00b7 <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--re);font-weight:700">Pay @Ed-Arcinue \u2192</a></span></div></div>';}
+  else if(history.length>0){sumEl.innerHTML='<div class="bal-banner ok" style="margin-bottom:18px"><span class="bbi">\u2705</span><div class="bbt"><strong>All paid up!</strong><span>No outstanding balance.</span></div></div>';}
+  else{sumEl.innerHTML='<div style="padding:20px;text-align:center;color:var(--ink3);font-size:13px">No sessions yet. Sign up for a game!</div>';}
+  const histEl=document.getElementById('pay-history');
+  if(!history.length){histEl.innerHTML='';return;}
+  const rows=history.map(h=>{
+    const attTag=h.attended?'<span class="tag-paid">Attended \u2713</span>':'<span class="tag-pend">\u2014</span>';
+    const payTag=h.paid?'<span class="tag-paid">Paid \u2713</span>':h.attended?'<span class="tag-owe">Owes $11</span>':'<span class="tag-pend">\u2014</span>';
+    const payLink=(!h.paid&&h.attended)?'<a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--or);font-size:11px;font-weight:600;text-decoration:none">Pay \u2192</a>':'';
+    return '<div class="ph-row"><div><div style="font-size:12px;font-weight:500">'+h.dateStr+'</div><div style="font-size:10px;color:var(--ink3);margin-top:1px">'+h.label+'</div></div><div>'+attTag+'</div><div>'+payTag+'</div><div>'+payLink+'</div></div>';
   }).join('');
-
-  histEl.innerHTML = `<div style="font-family:var(--fd);font-size:20px;letter-spacing:1px;margin-bottom:10px">SESSION HISTORY</div>
-    <div class="pay-hist">
-      <div class="ph-head"><span>Game</span><span>Attended</span><span>Payment</span><span></span></div>
-      ${rows}
-    </div>`;
+  histEl.innerHTML='<div style="font-family:var(--fd);font-size:20px;letter-spacing:1px;margin-bottom:10px">SESSION HISTORY</div><div class="pay-hist"><div class="ph-head"><span>Game</span><span>Attended</span><span>Payment</span><span></span></div>'+rows+'</div>';
 }
 
-// ══════════════════════════════════════════════════
-// ADMIN
-// ══════════════════════════════════════════════════
-function renderAdmin() {
-  if (!CU?.is_admin) return;
-  document.getElementById('admin-game-count').textContent = `${games.length} games`;
-
-  // Games
-  const gb = document.getElementById('admin-games-body');
-  if (!games.length) { gb.innerHTML = '<div style="font-size:13px;color:var(--ink3)">No games yet.</div>'; }
-  else gb.innerHTML = games.map(g => `
-    <div style="padding:16px 0;border-bottom:1px solid var(--rim2)">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
-        <div>
-          <div style="font-size:14px;font-weight:700">${g.day_short} · ${g.date_str} · ${g.time_str}</div>
-          <div style="font-size:12px;color:var(--ink2);margin-top:2px">${g.roster.length}/${g.max_players} confirmed · ${g.waitlist.length} waitlist</div>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn btn-sm btn-bl" onclick="adminMarkAll('${g.id}','attended')">✓ All Attended</button>
-          <button class="btn btn-sm btn-go" onclick="adminMarkAll('${g.id}','paid')">💰 All Paid</button>
-          <button class="btn btn-sm btn-gh" onclick="adminClearRoster('${g.id}')">Clear</button>
-          <button class="btn btn-sm btn-re" onclick="adminDeleteGame('${g.id}')">Delete</button>
-        </div>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px">
-        ${g.roster.filter(e=>e.display_name).map(e => `
-          <div style="display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--rim);border-radius:8px;padding:5px 9px;font-size:12px">
-            <span style="font-weight:600">${e.display_name}</span>
-            <button class="btn btn-xs ${e.attended?'btn-bl':'btn-gh'}" onclick="adminToggle('${e.id}','attended',${!e.attended})">${e.attended?'✓ Att':'○ Att'}</button>
-            <button class="btn btn-xs ${e.paid?'btn-gr':'btn-go'}" onclick="adminToggle('${e.id}','paid',${!e.paid})">${e.paid?'✓ Paid':'$ Paid'}</button>
-          </div>`).join('')}
-        ${g.waitlist.length ? `<div style="font-size:11px;color:var(--go);align-self:center;margin-left:4px">WL: ${g.waitlist.map(w=>w.display_name).join(', ')}</div>` : ''}
-      </div>
-    </div>`).join('');
-
-  // Outstanding payments
-  const pb = document.getElementById('admin-payments-body');
-  const owed = [];
-  games.forEach(g => g.roster.filter(e => e.attended && !e.paid).forEach(e => {
-    owed.push({ name:e.display_name, gameLabel:`${g.day_short} ${g.date_str}`, entryId:e.id });
-  }));
-  document.getElementById('admin-owe-count').textContent = owed.length ? `${owed.length} outstanding` : 'All clear ✅';
-  pb.innerHTML = owed.length
-    ? owed.map(o => `<div class="arow">
-        <div style="flex:1"><div class="uname">${o.name}</div><div class="uemail">${o.gameLabel}</div></div>
-        <span style="font-size:13px;font-weight:700;color:var(--re)">$11</span>
-        <button class="btn btn-sm btn-gr" onclick="adminMarkPaid('${o.entryId}')">Mark Paid ✓</button>
-      </div>`).join('')
-    : '<div style="font-size:13px;color:var(--gr)">✅ No outstanding payments!</div>';
-
-  // Members
-  const ub = document.getElementById('admin-users-body');
-  document.getElementById('admin-user-count').textContent = `${members.length} registered`;
-  ub.innerHTML = members.map(m => `
-    <div class="arow">
-      <div style="flex:1">
-        <div class="uname">${m.first_name} ${m.last_name} ${m.is_admin?'<span class="badge" style="background:var(--or2);color:var(--or);border:1px solid rgba(255,92,26,.3);font-size:9px">Admin</span>':''}</div>
-        <div class="uemail">${m.email}${m.phone?' · '+m.phone:''}</div>
-      </div>
-      ${m.id !== CU?.id
-        ? `<button class="btn btn-xs ${m.is_admin?'btn-re':'btn-gr'}" onclick="toggleAdminRole('${m.id}',${!m.is_admin})">${m.is_admin?'Remove Admin':'Make Admin'}</button>`
-        : `<span style="font-size:11px;color:var(--ink3)">You</span>`}
-    </div>`).join('');
+function renderAdmin(){
+  if(!CU?.is_admin)return;
+  document.getElementById('admin-game-count').textContent=games.length+' games';
+  const gb=document.getElementById('admin-games-body');
+  if(!games.length){gb.innerHTML='<div style="font-size:13px;color:var(--ink3)">No games yet.</div>';}
+  else gb.innerHTML=games.map(g=>'<div style="padding:16px 0;border-bottom:1px solid var(--rim2)"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px"><div><div style="font-size:14px;font-weight:700">'+g.day_short+' \u00b7 '+g.date_str+' \u00b7 '+g.time_str+'</div><div style="font-size:12px;color:var(--ink2);margin-top:2px">'+g.roster.length+'/'+g.max_players+' confirmed \u00b7 '+g.waitlist.length+' waitlist</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm btn-bl" onclick="adminMarkAll(\''+g.id+'\',\'attended\')">\u2713 All Attended</button><button class="btn btn-sm btn-go" onclick="adminMarkAll(\''+g.id+'\',\'paid\')">\uD83D\uDCB0 All Paid</button><button class="btn btn-sm btn-gh" onclick="adminClearRoster(\''+g.id+'\')">Clear</button><button class="btn btn-sm btn-re" onclick="adminDeleteGame(\''+g.id+'\')">Delete</button></div></div><div style="display:flex;flex-wrap:wrap;gap:6px">'+g.roster.filter(e=>e.display_name).map(e=>'<div style="display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--rim);border-radius:8px;padding:5px 9px;font-size:12px"><span style="font-weight:600">'+e.display_name+'</span><button class="btn btn-xs '+(e.attended?'btn-bl':'btn-gh')+'" onclick="adminToggle(\''+e.id+'\',\'attended\','+(!e.attended)+')">'+(e.attended?'\u2713 Att':'\u25cb Att')+'</button><button class="btn btn-xs '+(e.paid?'btn-gr':'btn-go')+'" onclick="adminToggle(\''+e.id+'\',\'paid\','+(!e.paid)+')">'+(e.paid?'\u2713 Paid':'$ Paid')+'</button></div>').join('')+(g.waitlist.length?'<div style="font-size:11px;color:var(--go);align-self:center;margin-left:4px">WL: '+g.waitlist.map(w=>w.display_name).join(', ')+'</div>':'')+'</div></div>').join('');
+  const pb=document.getElementById('admin-payments-body');
+  const owed=[];
+  games.forEach(g=>g.roster.filter(e=>e.attended&&!e.paid).forEach(e=>{owed.push({name:e.display_name,gameLabel:g.day_short+' '+g.date_str,entryId:e.id});}));
+  document.getElementById('admin-owe-count').textContent=owed.length?owed.length+' outstanding':'All clear \u2705';
+  pb.innerHTML=owed.length?owed.map(o=>'<div class="arow"><div style="flex:1"><div class="uname">'+o.name+'</div><div class="uemail">'+o.gameLabel+'</div></div><span style="font-size:13px;font-weight:700;color:var(--re)">$11</span><button class="btn btn-sm btn-gr" onclick="adminMarkPaid(\''+o.entryId+'\')">Mark Paid \u2713</button></div>').join(''):'<div style="font-size:13px;color:var(--gr)">\u2705 No outstanding payments!</div>';
+  const ub=document.getElementById('admin-users-body');
+  document.getElementById('admin-user-count').textContent=members.length+' registered';
+  ub.innerHTML=members.map(m=>'<div class="arow"><div style="flex:1"><div class="uname">'+m.first_name+' '+m.last_name+(m.is_admin?' <span class="badge" style="background:var(--or2);color:var(--or);border:1px solid rgba(255,92,26,.3);font-size:9px">Admin</span>':'')+'</div><div class="uemail">'+m.email+(m.phone?' \u00b7 '+m.phone:'')+'</div></div>'+(m.id!==CU?.id?'<button class="btn btn-xs '+(m.is_admin?'btn-re':'btn-gr')+'" onclick="toggleAdminRole(\''+m.id+'\','+(!m.is_admin)+')">'+(m.is_admin?'Remove Admin':'Make Admin')+'</button>':'<span style="font-size:11px;color:var(--ink3)">You</span>')+'</div>').join('');
+  renderAdminQuotes();
 }
 
-async function adminAddGame() {
-  const day   = document.getElementById('new-day').value;
-  const date  = document.getElementById('new-date').value;
-  const time  = document.getElementById('new-time').value || '8 – 10 PM';
-  const max   = parseInt(document.getElementById('new-max').value) || 15;
-  if (!date) { toast('Pick a date!','err'); return; }
-  const d = new Date(date+'T12:00:00');
-  const dateStr = d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  const { error } = await sb.from('games').insert({
-    day_short: day.slice(0,3).toUpperCase(), day_label: day,
-    date_str: dateStr, time_str: time, max_players: max
-  });
-  if (error) { toast('Error: '+error.message,'err'); return; }
-  document.getElementById('new-date').value = '';
-  await reload(); renderAdmin();
-  toast(`✅ ${day} ${dateStr} added!`,'ok');
+async function adminAddGame(){
+  const day=document.getElementById('new-day').value,date=document.getElementById('new-date').value,time=document.getElementById('new-time').value||'8 \u2013 10 PM',max=parseInt(document.getElementById('new-max').value)||15;
+  if(!date){toast('Pick a date!','err');return;}
+  const d=new Date(date+'T12:00:00');
+  const dateStr=d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  const{error}=await sb.from('games').insert({day_short:day.slice(0,3).toUpperCase(),day_label:day,date_str:dateStr,time_str:time,max_players:max});
+  if(error){toast('Error: '+error.message,'err');return;}
+  document.getElementById('new-date').value='';
+  await reload();renderAdmin();toast('\u2705 '+day+' '+dateStr+' added!','ok');
 }
 
-async function adminDeleteGame(id) {
-  const g = games.find(x=>x.id===id);
-  if (!confirm(`Delete ${g.day_label} ${g.date_str}?`)) return;
+async function adminDeleteGame(id){
+  const g=games.find(x=>x.id===id);
+  if(!confirm('Delete '+g.day_label+' '+g.date_str+'?'))return;
   await sb.from('games').delete().eq('id',id);
-  await reload(); renderAdmin(); toast('Game deleted.','');
+  await reload();renderAdmin();toast('Game deleted.','');
 }
 
-async function adminClearRoster(id) {
-  if (!confirm('Clear all players and waitlist?')) return;
-  await Promise.all([
-    sb.from('roster').delete().eq('game_id',id),
-    sb.from('waitlist').delete().eq('game_id',id),
-  ]);
-  await reload(); renderAdmin(); toast('Roster cleared.','');
+async function adminClearRoster(id){
+  if(!confirm('Clear all players and waitlist?'))return;
+  await Promise.all([sb.from('roster').delete().eq('game_id',id),sb.from('waitlist').delete().eq('game_id',id)]);
+  await reload();renderAdmin();toast('Roster cleared.','');
 }
 
-async function adminToggle(entryId, field, val) {
-  const update = {};
-  update[field] = val;
-  const { error } = await sb.from('roster').update(update).eq('id', entryId);
-  if (error) { toast('Error: '+error.message,'err'); return; }
-  await reload(); renderAdmin();
+async function adminToggle(entryId,field,val){
+  const update={};update[field]=val;
+  const{error}=await sb.from('roster').update(update).eq('id',entryId);
+  if(error){toast('Error: '+error.message,'err');return;}
+  await reload();renderAdmin();
 }
 
-async function adminMarkAll(gameId, field) {
-  const game = games.find(x=>x.id===gameId);
-  const update = {}; update[field] = true;
-  await sb.from('roster').update(update).eq('game_id', gameId);
-  await reload(); renderAdmin();
-  toast(`All players marked ${field} for ${game.day_short} ${game.date_str}`,'ok');
+async function adminMarkAll(gameId,field){
+  const game=games.find(x=>x.id===gameId);const update={};update[field]=true;
+  await sb.from('roster').update(update).eq('game_id',gameId);
+  await reload();renderAdmin();toast('All players marked '+field+' for '+game.day_short+' '+game.date_str,'ok');
 }
 
-async function adminMarkPaid(entryId) {
-  await sb.from('roster').update({ paid: true }).eq('id', entryId);
-  await reload(); renderAdmin(); renderPayments?.();
-  toast('Marked paid ✓','ok');
+async function adminMarkPaid(entryId){
+  await sb.from('roster').update({paid:true}).eq('id',entryId);
+  await reload();renderAdmin();renderPayments?.();toast('Marked paid \u2713','ok');
 }
 
-async function toggleAdminRole(userId, val) {
-  await sb.from('members').update({ is_admin: val }).eq('id', userId);
-  await loadAll(); renderAdmin();
-  const m = members.find(x=>x.id===userId);
-  toast(`${m?.first_name} is ${val?'now':'no longer'} an admin.`,'ok');
+async function toggleAdminRole(userId,val){
+  await sb.from('members').update({is_admin:val}).eq('id',userId);
+  await loadAll();renderAdmin();
+  const m=members.find(x=>x.id===userId);
+  toast((m?.first_name||'User')+' is '+(val?'now':'no longer')+' an admin.','ok');
 }
 
-// ══════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.overlay').forEach(el => el.addEventListener('click', e => { if(e.target===el) el.classList.remove('open'); }));
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 
-function v(id) { return document.getElementById(id)?.value.trim() || ''; }
-function se(id) { const el=document.getElementById(id); if(el){el.style.display='block';setTimeout(()=>el.style.display='none',3500);} }
-function setLoading(id, on) { const el=document.getElementById(id); if(el){el.disabled=on;el.textContent=on?'Loading…':(id==='reg-btn'?'Create Account':'Sign In');} }
+function v(id){return document.getElementById(id)?.value.trim()||'';}
+function se(id){const el=document.getElementById(id);if(el){el.style.display='block';setTimeout(()=>el.style.display='none',3500);}}
+function setLoading(id,on){const el=document.getElementById(id);if(el){el.disabled=on;el.textContent=on?'Loading\u2026':(id==='reg-btn'?'Create Account':'Sign In');}}
 
-function toast(msg, type='') {
-  const c = document.getElementById('toasts');
-  const t = document.createElement('div');
-  t.className='toast'+(type?' '+type:''); t.textContent=msg; c.appendChild(t);
+function toast(msg,type=''){
+  const c=document.getElementById('toasts');const t=document.createElement('div');
+  t.className='toast'+(type?' '+type:'');t.textContent=msg;c.appendChild(t);
   setTimeout(()=>{t.style.transition='opacity .35s';t.style.opacity='0';setTimeout(()=>t.remove(),380);},3800);
 }
 
-// ── Boot ──
 init();
 </script>
 </body>
