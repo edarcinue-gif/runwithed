@@ -624,14 +624,18 @@ async function init(){
 }
 
 async function loadAll(){
+  const twoDaysAgo=new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate()-2);
+  const twoDaysAgoStr=twoDaysAgo.toISOString().split('T')[0];
+  const todayStr=new Date().toISOString().split('T')[0];
   const[mRes,gRes,rRes,wRes]=await Promise.all([
     sb.from('members').select('*').order('last_name'),
-    sb.from('games').select('*').gte('game_date',new Date().toISOString().split('T')[0]).order('game_date',{ascending:true}),
+    sb.from('games').select('*').gte('game_date',twoDaysAgoStr).order('game_date',{ascending:true}),
     sb.from('roster').select('*').order('created_at'),
     sb.from('waitlist').select('*').order('created_at'),
   ]);
-  const hRes=await sb.from('games').select('*').lt('game_date',new Date().toISOString().split('T')[0]).order('game_date',{ascending:false});
+  const hRes=await sb.from('games').select('*').lt('game_date',twoDaysAgoStr).order('game_date',{ascending:false});
   window.pastGames=hRes.data||[];
+  window.todayStr=todayStr;
   if(mRes.error)throw mRes.error;
   members=mRes.data||[];
   const roster=rRes.data||[], waitlist=wRes.data||[];
@@ -712,21 +716,89 @@ function getOwed(memberId){
   return o;
 }
 
+function isGamePast(game){
+  const today=window.todayStr||new Date().toISOString().split('T')[0];
+  return (game.game_date||'') < today;
+}
+
 function renderGames(){
   const el=document.getElementById('games-list');
   if(!el)return;
   if(!games.length){el.innerHTML='<div style="padding:36px 0;text-align:center;color:var(--ink3);font-size:13px">No games scheduled yet \u2014 check back soon.</div>';return;}
   el.innerHTML=games.map(g=>gameCard(g)).join('');
+  // History section — visible to everyone, shows full roster + attendance
   const hist=document.getElementById('history-list');
   if(hist){
-    if(!window.pastGames?.length){hist.innerHTML='<div style="font-size:13px;color:var(--ink3)">No past games yet.</div>';}
-    else{hist.innerHTML=window.pastGames.map(g=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--s1);border:1px solid var(--rim);border-radius:10px;margin-bottom:8px;opacity:0.6"><div><div style="font-size:14px;font-weight:600">'+g.day_short+' \u00b7 '+g.date_str+'</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">'+g.time_str+'</div></div><div style="font-size:12px;color:var(--ink3)">'+g.max_players+' max</div></div>').join('');}
+    // Combine: games in the 2-day window that are past + older pastGames
+    const recentPast=games.filter(g=>isGamePast(g));
+    const allPast=[...recentPast, ...(window.pastGames||[])];
+    if(!allPast.length){hist.innerHTML='<div style="font-size:13px;color:var(--ink3)">No past games yet.</div>';return;}
+    hist.innerHTML=allPast.map(g=>{
+      const rosterList=(g.roster||[]);
+      const attended=rosterList.filter(e=>e.attended);
+      const rosterHTML=rosterList.length
+        ? rosterList.map(e=>{
+            const initials=e.display_name.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+            return '<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.03);margin-bottom:4px">'+
+              '<div style="width:26px;height:26px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--ink3);flex-shrink:0">'+initials+'</div>'+
+              '<span style="font-size:13px;font-weight:500;flex:1">'+e.display_name+'</span>'+
+              (e.attended?'<span style="font-size:10px;font-weight:700;color:var(--gr);background:var(--gr2);padding:2px 7px;border-radius:6px;border:1px solid rgba(52,211,153,.25)">Played \u2713</span>':
+                          '<span style="font-size:10px;color:var(--ink3)">No-show</span>')+
+            '</div>';
+          }).join('')
+        : '<div style="font-size:12px;color:var(--ink3);padding:4px 0">No roster recorded</div>';
+      return '<div style="background:var(--s1);border:1px solid var(--rim);border-radius:var(--r);overflow:hidden;margin-bottom:12px">'+
+        '<div style="background:linear-gradient(135deg,var(--s2),var(--s3));padding:14px 18px;border-bottom:1px solid var(--rim2);display:flex;justify-content:space-between;align-items:center">'+
+          '<div>'+
+            '<div style="font-family:var(--fd);font-size:28px;color:var(--ink3);line-height:1">'+g.day_short+'</div>'+
+            '<div style="font-size:12px;color:var(--ink3);margin-top:2px">'+g.date_str+'</div>'+
+          '</div>'+
+          '<div style="text-align:right">'+
+            '<div style="font-size:11px;font-weight:700;color:var(--ink3);background:rgba(255,255,255,.05);border:1px solid var(--rim);padding:4px 10px;border-radius:6px;letter-spacing:.05em">GAME OVER</div>'+
+            '<div style="font-size:11px;color:var(--ink3);margin-top:5px">'+attended.length+' played \u00b7 '+rosterList.length+' confirmed</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="padding:14px 18px">'+rosterHTML+'</div>'+
+      '</div>';
+    }).join('');
   }
 }
 
 function gameCard(game){
+  const past=isGamePast(game);
   const n=game.roster.length,max=game.max_players,full=n>=max;
   const pct=Math.min((n/max)*100,100);
+
+  // ── PAST GAME — greyed out, read-only ──────────────────────────
+  if(past){
+    const attended=game.roster.filter(e=>e.attended);
+    const rosterRows=game.roster.map((e,i)=>{
+      const initials=e.display_name.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      return '<div class="player-row" style="opacity:.55">'+
+        '<div class="av">'+initials+'</div>'+
+        '<div class="pinfo"><div class="pname">'+e.display_name+'</div><div class="psub">#'+(i+1)+'</div></div>'+
+        '<div class="pbadges">'+
+          (e.attended?'<span class="badge b-att">Played \u2713</span>':'<span class="badge b-guest">No-show</span>')+
+          (e.paid?'<span class="badge b-paid">Paid \u2713</span>':'')+
+        '</div>'+
+      '</div>';
+    }).join('') || '<div style="font-size:12px;color:var(--ink3);padding:5px 0">No roster recorded</div>';
+    return '<div class="card" style="opacity:.62;filter:saturate(.3)">'+
+      '<div class="card-head" style="position:relative">'+
+        '<div><div class="game-day" style="color:var(--ink3)">'+game.day_short+'</div><div class="game-date">'+game.date_str+'</div></div>'+
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">'+
+          '<div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);background:rgba(255,255,255,.05);border:1px solid var(--rim);padding:4px 10px;border-radius:6px">GAME OVER</div>'+
+          '<div style="font-size:11px;color:var(--ink3)">'+attended.length+' played \u00b7 '+n+' confirmed</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="card-body">'+
+        '<div class="roster-meta"><div class="roster-label" style="color:var(--ink3)">Who played</div></div>'+
+        rosterRows+
+      '</div>'+
+    '</div>';
+  }
+
+  // ── UPCOMING GAME — full interactive card ──────────────────────
   const barCol=pct<45?'var(--gr)':pct<80?'var(--go)':'var(--or)';
   let balBanner='';
   if(CU){const owed=getOwed(CU.id);if(owed>0)balBanner='<div class="bal-banner owe"><span class="bbi">\u26a0\uFE0F</span><div class="bbt"><strong>You owe $'+(owed*11)+' from '+owed+' session'+(owed>1?'s':'')+'</strong><span>Pay <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--re);font-weight:700">@Ed-Arcinue</a> \u00b7 Ed will mark you paid.</span></div></div>';}
