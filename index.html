@@ -701,12 +701,12 @@ async function submitReg(){
   if(!ok)return;
   if(members.find(m=>m.email===email)){toast('Account already exists for that email.','err');return;}
   setLoading('reg-btn',true);
-  const{data,error}=await sb.from('members').insert({first_name:first,last_name:last,email,phone,is_admin:false}).select().single();
+  const{data,error}=await sb.from('members').insert({first_name:first,last_name:last,email,phone,is_admin:false,status:'pending',role:'player'}).select().single();
   setLoading('reg-btn',false);
   if(error){toast('Error: '+error.message,'err');return;}
   await loadAll(); CU=data; localStorage.setItem('rwe_email',email);
   renderNav(); renderGames(); showPage('home');
-  toast('Welcome to the run, '+first+'! \uD83C\uDFC0','ok');
+  toast('Account created! Waiting for Ed to approve you. \u23f3','ok');
 }
 
 async function submitLogin(){
@@ -811,15 +811,18 @@ function gameCard(game){
   }
 
   // ── UPCOMING GAME — full interactive card ──────────────────────
+// ── UPCOMING GAME — full interactive card ──────────────────────
   const barCol=pct<45?'var(--gr)':pct<80?'var(--go)':'var(--or)';
   let balBanner='';
-  if(CU){const owed=getOwed(CU.id);if(owed>0)balBanner='<div class="bal-banner owe"><span class="bbi">\u26a0\uFE0F</span><div class="bbt"><strong>You owe $'+(owed*11)+' from '+owed+' session'+(owed>1?'s':'')+'</strong><span>Pay <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--re);font-weight:700">@Ed-Arcinue</a> \u00b7 Ed will mark you paid.</span></div></div>';}
+  if(CU && isPending()){balBanner='<div class="bal-banner owe" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.25);color:var(--go)"><span class="bbi">\u23f3</span><div class="bbt"><strong>Pending Ed\'s approval</strong><span>You can browse games \u2014 RSVP unlocks once approved.</span></div></div>';}
+  else if(CU){const owed=getOwed(CU.id);if(owed>0)balBanner='<div class="bal-banner owe"><span class="bbi">\u26a0\uFE0F</span><div class="bbt"><strong>You owe $'+(owed*11)+' from '+owed+' session'+(owed>1?'s':'')+'</strong><span>Pay <a href="https://venmo.com/Ed-Arcinue" target="_blank" style="color:var(--re);font-weight:700">@Ed-Arcinue</a> \u00b7 Ed will mark you paid.</span></div></div>';}
   let rosterRows=game.roster.map((e,i)=>playerRowHTML(e,i,game,false)).join('');
   if(!rosterRows)rosterRows='<div style="font-size:12px;color:var(--ink3);padding:5px 0 2px">No one yet \u2014 be the first!</div>';
   let wlSection='';
   if(game.waitlist.length){const wlRows=game.waitlist.map((e,i)=>playerRowHTML(e,i,game,true)).join('');wlSection='<div class="wl-div"><span>\u23f3 Waitlist ('+game.waitlist.length+')</span></div>'+wlRows;}
   let addSection='';
-  if(CU){const ph=full?'Add to waitlist\u2026':'Add a name\u2026';const lbl=full?'\u23f3':'\uD83C\uDFC0 Add';addSection='<div class="add-row"><input class="add-input" id="add-'+game.id+'" placeholder="'+ph+'" maxlength="40" onkeydown="if(event.key===\'Enter\')addName(\''+game.id+'\')"><button class="btn btn-or" onclick="addName(\''+game.id+'\')" style="padding:10px 16px">'+lbl+'</button></div>';}
+  if(CU && isPending()){addSection='<div style="margin-top:14px;padding:12px 14px;background:rgba(251,191,36,.08);border-radius:9px;border:1px solid rgba(251,191,36,.2);font-size:13px;color:var(--go);text-align:center">\u23f3 RSVP unlocks once Ed approves your account</div>';}
+  else if(CU){const ph=full?'Add to waitlist\u2026':'Add a name\u2026';const lbl=full?'\u23f3':'\uD83C\uDFC0 Add';addSection='<div class="add-row"><input class="add-input" id="add-'+game.id+'" placeholder="'+ph+'" maxlength="40" onkeydown="if(event.key===\'Enter\')addName(\''+game.id+'\')"><button class="btn btn-or" onclick="addName(\''+game.id+'\')" style="padding:10px 16px">'+lbl+'</button></div>';}
   else{addSection='<div style="margin-top:14px;padding:10px 14px;background:var(--s2);border-radius:9px;border:1px solid var(--rim);font-size:13px;color:var(--ink2)"><a href="#" class="al" onclick="showPage(\'login\');return false">Sign in</a> or <a href="#" class="al" onclick="showPage(\'register\');return false">register</a> to add names.</div>';}
   return '<div class="card"><div class="card-head"><div><div class="game-day">'+game.day_short+'</div><div class="game-date">'+game.date_str+'</div></div><div class="time-badge">'+game.time_str+'</div></div><div class="card-body">'+balBanner+'<div class="roster-meta"><div class="roster-label">Confirmed \u00b7 '+n+'/'+max+'</div>'+(game.waitlist.length?'<div style="font-size:11px;color:var(--go);font-weight:600">'+game.waitlist.length+' waitlisted</div>':'')+' </div><div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+barCol+'"></div></div>'+(n<6?'<div style="font-size:12px;color:var(--go);margin-bottom:10px">\u26a0 Need '+(6-n)+' more for a full run</div>':'')+rosterRows+wlSection+addSection+'<div class="ext-links"><a href="https://venmo.com/Ed-Arcinue" target="_blank" class="ext-link lv">\uD83D\uDCB8 Pay @Ed-Arcinue $11</a><a href="https://shoot360-prod.saloncloudsplus.io/ghl/athlete-info" target="_blank" class="ext-link lw">\uD83D\uDCCB Sign Shoot 360 Waiver</a></div></div></div>';
 }
@@ -920,11 +923,21 @@ function renderAdmin(){
   games.forEach(g=>g.roster.filter(e=>e.attended&&!e.paid).forEach(e=>{owed.push({name:e.display_name,gameLabel:g.day_short+' '+g.date_str,entryId:e.id});}));
   document.getElementById('admin-owe-count').textContent=owed.length?owed.length+' outstanding':'All clear \u2705';
   pb.innerHTML=owed.length?owed.map(o=>'<div class="arow"><div style="flex:1"><div class="uname">'+o.name+'</div><div class="uemail">'+o.gameLabel+'</div></div><span style="font-size:13px;font-weight:700;color:var(--re)">$11</span><button class="btn btn-sm btn-gr" onclick="adminMarkPaid(\''+o.entryId+'\')">Mark Paid \u2713</button></div>').join(''):'<div style="font-size:13px;color:var(--gr)">\u2705 No outstanding payments!</div>';
-  const ub=document.getElementById('admin-users-body');
-  document.getElementById('admin-user-count').textContent=members.length+' registered';
-  ub.innerHTML=members.map(m=>'<div class="arow"><div style="flex:1"><div class="uname">'+m.first_name+' '+m.last_name+(m.is_admin?' <span class="badge" style="background:var(--or2);color:var(--or);border:1px solid rgba(255,92,26,.3);font-size:9px">Admin</span>':'')+'</div><div class="uemail">'+m.email+(m.phone?' \u00b7 '+m.phone:'')+'</div></div>'+(m.id!==CU?.id?'<button class="btn btn-xs '+(m.is_admin?'btn-re':'btn-gr')+'" onclick="toggleAdminRole(\''+m.id+'\','+(!m.is_admin)+')">'+(m.is_admin?'Remove Admin':'Make Admin')+'</button>':'<span style="font-size:11px;color:var(--ink3)">You</span>')+'</div>').join('');
+const ub=document.getElementById('admin-users-body');
+  const pendingCount=members.filter(m=>isPending(m)).length;
+  document.getElementById('admin-user-count').textContent=members.length+' registered'+(pendingCount?' \u00b7 '+pendingCount+' pending':'');
+  const sortedMembers=[...members].sort((a,b)=>{const ap=isPending(a)?0:1, bp=isPending(b)?0:1; return ap-bp;});
+  ub.innerHTML=sortedMembers.map(m=>{
+    const pending=isPending(m);
+    const pendingBadge=pending?'<span class="badge" style="background:rgba(251,191,36,.15);color:var(--go);border:1px solid rgba(251,191,36,.35);font-size:9px">\u23f3 Pending</span>':'';
+    const adminBadge=m.is_admin?'<span class="badge" style="background:var(--or2);color:var(--or);border:1px solid rgba(255,92,26,.3);font-size:9px">Admin</span>':'';
+    let actions='';
+    if(m.id===CU?.id){actions='<span style="font-size:11px;color:var(--ink3)">You</span>';}
+    else if(pending){actions='<button class="btn btn-xs btn-gr" onclick="approveMember(\''+m.id+'\')">\u2713 Approve</button><button class="btn btn-xs btn-re" onclick="rejectMember(\''+m.id+'\')">Reject</button>';}
+    else{actions='<button class="btn btn-xs '+(m.is_admin?'btn-re':'btn-gr')+'" onclick="toggleAdminRole(\''+m.id+'\','+(!m.is_admin)+')">'+(m.is_admin?'Remove Admin':'Make Admin')+'</button>';}
+    return '<div class="arow" style="'+(pending?'background:rgba(251,191,36,.05);margin:0 -20px;padding:10px 20px':'')+'"><div style="flex:1"><div class="uname">'+m.first_name+' '+m.last_name+' '+pendingBadge+' '+adminBadge+'</div><div class="uemail">'+m.email+(m.phone?' \u00b7 '+m.phone:'')+'</div></div>'+actions+'</div>';
+  }).join('');  
   renderAdminQuotes();
-}
 
 async function adminAddGame(){
   const day=document.getElementById('new-day').value,date=document.getElementById('new-date').value,time=document.getElementById('new-time').value||'8 \u2013 10 PM',max=parseInt(document.getElementById('new-max').value)||15;
@@ -975,6 +988,25 @@ async function toggleAdminRole(userId,val){
   toast((m?.first_name||'User')+' is '+(val?'now':'no longer')+' an admin.','ok');
 }
 
+async function approveMember(userId){
+  const m=members.find(x=>x.id===userId);
+  if(!m)return;
+  if(!confirm('Approve '+m.first_name+' '+m.last_name+'?\n\nThey\'ll be able to RSVP for games immediately.'))return;
+  const{error}=await sb.from('members').update({status:'approved',approved_at:new Date().toISOString(),approved_by:CU.id}).eq('id',userId);
+  if(error){toast('Error: '+error.message,'err');return;}
+  await loadAll();renderAdmin();
+  toast('\u2713 '+m.first_name+' approved! They can now RSVP.','ok');
+}
+
+async function rejectMember(userId){
+  const m=members.find(x=>x.id===userId);
+  if(!m)return;
+  if(!confirm('Reject '+m.first_name+' '+m.last_name+'?\n\nThey won\'t be able to RSVP. You can change this later.'))return;
+  const{error}=await sb.from('members').update({status:'rejected'}).eq('id',userId);
+  if(error){toast('Error: '+error.message,'err');return;}
+  await loadAll();renderAdmin();
+  toast(m.first_name+' marked as rejected.','');
+}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
