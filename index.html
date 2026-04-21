@@ -629,12 +629,18 @@ async function loadAll(){
   const todayStr=new Date().toISOString().split('T')[0];
   const twoWeeksOut=new Date(); twoWeeksOut.setDate(twoWeeksOut.getDate()+14);
   const twoWeeksOutStr=twoWeeksOut.toISOString().split('T')[0];
-  const[mRes,gRes,rRes,wRes]=await Promise.all([
+  const[mRes,gRes,rRes,wRes,guRes,dpRes,prRes]=await Promise.all([
     sb.from('members').select('*').order('last_name'),
     sb.from('games').select('*').gte('game_date',twoDaysAgoStr).lte('game_date',twoWeeksOutStr).order('game_date',{ascending:true}),
     sb.from('roster').select('*').order('created_at'),
     sb.from('waitlist').select('*').order('created_at'),
+    sb.from('guests').select('*').order('created_at',{ascending:false}),
+    sb.from('dismissed_prompts').select('*'),
+    sb.from('pending_rsvps').select('*'),
   ]);
+  guestsData = guRes.data || [];
+  dismissedPrompts = dpRes.data || [];
+  pendingRsvps = prRes.data || [];
   const hRes=await sb.from('games').select('*').lt('game_date',twoDaysAgoStr).order('game_date',{ascending:false});
   window.pastGames=hRes.data||[];
   window.todayStr=todayStr;
@@ -656,10 +662,12 @@ function subscribeRealtime(){
     .on('postgres_changes',{event:'*',schema:'public',table:'roster'},reload)
     .on('postgres_changes',{event:'*',schema:'public',table:'waitlist'},reload)
     .on('postgres_changes',{event:'*',schema:'public',table:'games'},reload)
+    .on('postgres_changes',{event:'*',schema:'public',table:'guests'},reload)
+    .on('postgres_changes',{event:'*',schema:'public',table:'dismissed_prompts'},reload)
+    .on('postgres_changes',{event:'*',schema:'public',table:'pending_rsvps'},reload)
+    .on('postgres_changes',{event:'*',schema:'public',table:'members'},reload)
     .subscribe();
 }
-
-function goHome(){showPage('home');renderGames();}
 
 function renderNav(){
   const el=document.getElementById('nav-links');
