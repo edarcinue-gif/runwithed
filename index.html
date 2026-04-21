@@ -414,7 +414,7 @@ const CONFIGURED = !SUPABASE_URL.startsWith('YOUR_');
 let sb = null;
 if (CONFIGURED) sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let members = [], games = [], CU = null, pendingCancel = {};
+let members = [], games = [], CU = null, pendingCancel = {}; let guestsData = [], dismissedPrompts = [], pendingRsvps = [];  /* Role & status helpers — backwards compatible with legacy is_admin column */ function isAdmin(m){ m=m||CU; if(!m) return false; return m.is_admin===true || m.role==='admin' || m.role==='owner'; } function isOwner(m){ m=m||CU; if(!m) return false; return m.role==='owner'; } function isApproved(m){ m=m||CU; if(!m) return false; return m.status==='approved' || !m.status; } function isPending(m){ m=m||CU; if(!m) return false; return m.status==='pending'; }
 
 /* =====================================================
    QUOTES
