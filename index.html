@@ -669,6 +669,8 @@ function subscribeRealtime(){
     .subscribe();
 }
 
+function goHome(){showPage('home');renderGames();}
+  
 function renderNav(){
   const el=document.getElementById('nav-links');
   if(!CONFIGURED){el.innerHTML='';return;}
