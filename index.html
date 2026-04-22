@@ -369,6 +369,10 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
       <div class="admin-head"><h3>REGISTERED MEMBERS</h3><span id="admin-user-count"></span></div>
       <div class="admin-body" id="admin-users-body"></div>
     </div>
+    <div class="admin-card" id="admin-guests-card">
+      <div class="admin-head"><h3>PENDING GUESTS</h3><span id="admin-guests-count"></span></div>
+      <div class="admin-body" id="admin-guests-body"></div>
+    </div>
     <!-- QUOTES MANAGEMENT -->
     <div class="admin-card" id="admin-quotes-card">
       <div class="admin-head"><h3>QUOTES</h3><span id="admin-quotes-count"></span></div>
@@ -391,7 +395,28 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
   </div>
 </div>
 
-<!-- NEXT GAME PROMPT MODAL -->
+ <!-- ADD GUEST MODAL -->
+<div class="overlay" id="guest-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('guest-modal')">&times;</button>
+    <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--or);margin-bottom:6px">Bring A Guest</div>
+    <h2>ADD YOUR GUEST</h2>
+    <p class="modal-sub" id="guest-game-label"></p>
+    <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.18);border-radius:9px;padding:11px 14px;margin-bottom:18px;font-size:12px;color:var(--ink2);line-height:1.55">
+      <strong style="color:var(--go);display:block;margin-bottom:3px">How this works</strong>
+      Your guest goes into a pending queue until Ed approves them. You'll also get an email draft to forward them the waiver + house rules.
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">First Name *</label><input class="fi" id="guest-first" placeholder="Alex" maxlength="30"><div class="ferr" id="err-gf">Required</div></div>
+      <div class="form-group"><label class="form-label">Last Name</label><input class="fi" id="guest-last" placeholder="Reyes" maxlength="30"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Email *</label><input class="fi" type="email" id="guest-email" placeholder="guest@email.com" maxlength="80"><div class="ferr" id="err-ge">Enter a valid email</div></div>
+    <button class="btn btn-or btn-lg" id="guest-submit-btn" onclick="submitGuest()">Add Guest &amp; Open Email Draft</button>
+    <p style="text-align:center;font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5">Max 2 guests per member per game</p>
+  </div>
+</div>
+
+  <!-- NEXT GAME PROMPT MODAL -->
 <div class="overlay" id="nextgame-modal">
   <div class="modal">
     <button class="modal-close" onclick="dismissNextGamePrompt('later')">&times;</button>
@@ -666,7 +691,11 @@ async function loadAll(){
   if(mRes.error)throw mRes.error;
   members=mRes.data||[];
   const roster=rRes.data||[], waitlist=wRes.data||[];
-  games=(gRes.data||[]).map(g=>({...g,roster:roster.filter(r=>r.game_id===g.id),waitlist:waitlist.filter(w=>w.game_id===g.id)}));
+games=(gRes.data||[]).map(g=>({...g,roster:roster.filter(r=>r.game_id===g.id),waitlist:waitlist.filter(w=>w.game_id===g.id)}));
+  // Attach game_id to guests via any roster/waitlist entry linking to this guest
+  const guestGameMap = {};
+  [...roster, ...waitlist].forEach(e => { if(e.guest_id) guestGameMap[e.guest_id] = e.game_id; });
+  guestsData = guestsData.map(gu => ({ ...gu, _game_id: guestGameMap[gu.id] || null }));
   if(CU) CU=members.find(m=>m.id===CU.id)||CU;
 }
 
@@ -810,6 +839,191 @@ async function dismissNextGamePrompt(mode){
   _nextGameForPrompt = null;
 }
 
+/* =====================================================
+   GUEST INVITE SYSTEM
+===================================================== */
+let _guestTargetGameId = null;
+
+function isGameWithinDays(game, days){
+  if(!game.game_date) return false;
+  const today = window.todayStr || new Date().toISOString().split('T')[0];
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate()+days);
+  const cutoffStr = cutoff.toISOString().split('T')[0];
+  return game.game_date >= today && game.game_date <= cutoffStr;
+}
+
+function openGuestModal(gameId){
+  if(!CU || !isApproved()) return;
+  const game = games.find(g => g.id === gameId);
+  if(!game) return;
+  _guestTargetGameId = gameId;
+  document.getElementById('guest-game-label').textContent = game.day_label + ' \u00b7 ' + game.date_str + ' \u00b7 ' + game.time_str;
+  document.getElementById('guest-first').value = '';
+  document.getElementById('guest-last').value = '';
+  document.getElementById('guest-email').value = '';
+  openModal('guest-modal');
+}
+
+async function submitGuest(){
+  const first = v('guest-first'), last = v('guest-last'), email = v('guest-email').toLowerCase();
+  let ok = true;
+  if(!first){ se('err-gf'); ok = false; }
+  if(!email || !email.includes('@')){ se('err-ge'); ok = false; }
+  if(!ok) return;
+  const game = games.find(g => g.id === _guestTargetGameId);
+  if(!game || !CU) return;
+
+  const btn = document.getElementById('guest-submit-btn');
+  btn.disabled = true; btn.textContent = 'Adding\u2026';
+
+  // ── Email collision check: if this email matches an existing approved member, just RSVP them
+  const existingMember = members.find(m => (m.email||'').toLowerCase() === email && m.status !== 'rejected');
+  if(existingMember){
+    const alreadyOn = [...game.roster, ...game.waitlist].some(e => e.member_id === existingMember.id);
+    if(alreadyOn){
+      btn.disabled = false; btn.textContent = 'Add Guest & Open Email Draft';
+      toast(existingMember.first_name+' is already on this game.', 'err');
+      return;
+    }
+    const full = game.roster.length >= game.max_players;
+    const table = full ? 'waitlist' : 'roster';
+    const { error } = await sb.from(table).insert({
+      game_id: game.id,
+      display_name: existingMember.first_name + ' ' + existingMember.last_name,
+      member_id: existingMember.id,
+      added_by_id: CU.id,
+      entry_type: 'member'
+    });
+    btn.disabled = false; btn.textContent = 'Add Guest & Open Email Draft';
+    if(error){ toast('Error: '+error.message, 'err'); return; }
+    closeModal('guest-modal');
+    await reload();
+    toast('\uD83C\uDFC0 That email belongs to '+existingMember.first_name+' \u2014 RSVP\'d them directly!', 'ok');
+    return;
+  }
+
+  // ── Check host's guest cap for this game
+  const myGuestCount = guestsData.filter(gu => gu.host_member_id === CU.id && gu._game_id === game.id && gu.status !== 'rejected').length;
+  if(myGuestCount >= 2){
+    btn.disabled = false; btn.textContent = 'Add Guest & Open Email Draft';
+    toast('You\'ve hit the 2-guest cap for this game.', 'err');
+    return;
+  }
+
+  // ── Create guest record
+  const { data: guestRow, error: gErr } = await sb.from('guests').insert({
+    host_member_id: CU.id,
+    first_name: first, last_name: last || null,
+    email: email,
+    status: 'pending',
+    waiver_sent_at: new Date().toISOString()
+  }).select().single();
+
+  if(gErr){ btn.disabled = false; btn.textContent = 'Add Guest & Open Email Draft'; toast('Error: '+gErr.message, 'err'); return; }
+
+  // ── Add to guest-waitlist (separate from regular waitlist — stays here until approved)
+  const { error: wErr } = await sb.from('waitlist').insert({
+    game_id: game.id,
+    display_name: first + ' ' + (last || '') + ' (guest of ' + CU.first_name + ')',
+    guest_id: guestRow.id,
+    host_member_id: CU.id,
+    added_by_id: CU.id,
+    entry_type: 'guest'
+  });
+
+  btn.disabled = false; btn.textContent = 'Add Guest & Open Email Draft';
+  if(wErr){ toast('Error: '+wErr.message, 'err'); return; }
+
+  closeModal('guest-modal');
+  await reload();
+  toast('\uD83E\uDD1D '+first+' added \u2014 pending Ed\'s approval.', 'ok');
+
+  // ── Open email draft for host to forward to guest
+  const subject = encodeURIComponent('You\'re invited to RunWithEd pickup basketball');
+  const body = encodeURIComponent(
+    'Hey '+first+'!\n\n'+
+    CU.first_name+' invited you to play pickup hoops with RunWithEd on '+game.day_label+', '+game.date_str+' at '+game.time_str+'.\n\n'+
+    'Location: Shoot 360 Leander — 2081 S Hwy 183, Leander TX\nCost: $11 per session (Venmo @Ed-Arcinue after you play)\n\n'+
+    'Two things to do before you show up:\n'+
+    '1. Sign the Shoot 360 waiver: https://shoot360-prod.saloncloudsplus.io/ghl/athlete-info\n'+
+    '2. Read the house rules: https://edarcinue-gif.github.io/runwithed/\n\n'+
+    'House rules summary:\n'+
+    '  \u2022 Play for fun, not to hurt each other\n'+
+    '  \u2022 No cheap shots or hard fouls\n'+
+    '  \u2022 No fighting \u2014 zero tolerance\n'+
+    '  \u2022 No excessive swearing\n'+
+    '  \u2022 Waiver required to play\n'+
+    '  \u2022 Invitation only \u2014 guests by approval\n\n'+
+    'Your spot is pending Ed\'s approval. You\'ll be confirmed once Ed gives the green light.\n\n'+
+    'See you on the court!\n'+CU.first_name
+  );
+  window.location.href = 'mailto:'+email+'?subject='+subject+'&body='+body;
+}
+
+async function approveGuest(guestId){
+  const gu = guestsData.find(x => x.id === guestId);
+  if(!gu) return;
+  if(!confirm('Approve '+gu.first_name+' '+(gu.last_name||'')+' as a guest?\n\nIf there\'s room, they\'ll be moved from the guest queue to the roster.')) return;
+
+  // Update guest status
+  const { error: uErr } = await sb.from('guests').update({
+    status: 'approved', approved_at: new Date().toISOString(), approved_by: CU.id
+  }).eq('id', guestId);
+  if(uErr){ toast('Error: '+uErr.message, 'err'); return; }
+
+  // Find their waitlist entry
+  const { data: wlEntries } = await sb.from('waitlist').select('*').eq('guest_id', guestId);
+  const wlEntry = (wlEntries || [])[0];
+  if(!wlEntry){ await loadAll(); renderAdmin(); toast(gu.first_name+' approved.', 'ok'); return; }
+
+  const game = games.find(g => g.id === wlEntry.game_id);
+  if(!game){ await loadAll(); renderAdmin(); toast(gu.first_name+' approved.', 'ok'); return; }
+
+  // If there's room AND no regular members are waitlisted, promote to roster
+  const regularWaitlist = game.waitlist.filter(w => w.entry_type !== 'guest');
+  if(game.roster.length < game.max_players && regularWaitlist.length === 0){
+    await sb.from('roster').insert({
+      game_id: wlEntry.game_id,
+      display_name: wlEntry.display_name,
+      guest_id: wlEntry.guest_id,
+      host_member_id: wlEntry.host_member_id,
+      added_by_id: wlEntry.added_by_id,
+      entry_type: 'guest'
+    });
+    await sb.from('waitlist').delete().eq('id', wlEntry.id);
+    await loadAll(); renderAdmin();
+    toast('\u2713 '+gu.first_name+' approved and added to the roster!', 'ok');
+  } else {
+    await loadAll(); renderAdmin();
+    toast('\u2713 '+gu.first_name+' approved. Staying on guest-waitlist (game is full or members are waitlisted).', 'ok');
+  }
+}
+
+async function rejectGuest(guestId){
+  const gu = guestsData.find(x => x.id === guestId);
+  if(!gu) return;
+  if(!confirm('Reject '+gu.first_name+' '+(gu.last_name||'')+'?\n\nThey\'ll be removed from the game.')) return;
+
+  await sb.from('guests').update({ status: 'rejected' }).eq('id', guestId);
+  await sb.from('waitlist').delete().eq('guest_id', guestId);
+  await sb.from('roster').delete().eq('guest_id', guestId);
+  await loadAll(); renderAdmin(); toast(gu.first_name+' rejected.', '');
+}
+
+function renderAdminGuests(){
+  const el = document.getElementById('admin-guests-body');
+  if(!el) return;
+  const pending = guestsData.filter(gu => gu.status === 'pending');
+  document.getElementById('admin-guests-count').textContent = pending.length ? pending.length+' pending' : 'All clear \u2705';
+  if(!pending.length){ el.innerHTML = '<div style="font-size:13px;color:var(--gr)">\u2705 No pending guests.</div>'; return; }
+  el.innerHTML = pending.map(gu => {
+    const host = members.find(m => m.id === gu.host_member_id);
+    const game = games.find(g => g.id === gu._game_id);
+    const gameLabel = game ? (game.day_short + ' ' + game.date_str) : 'Unknown game';
+    return '<div class="arow" style="background:rgba(56,189,248,.04);margin:0 -20px;padding:12px 20px"><div style="flex:1"><div class="uname">'+gu.first_name+' '+(gu.last_name||'')+' <span class="badge" style="background:var(--bl2);color:var(--bl);border:1px solid rgba(56,189,248,.3);font-size:9px">Pending Guest</span></div><div class="uemail">'+gu.email+' \u00b7 Guest of '+(host?host.first_name+' '+host.last_name:'?')+' \u00b7 '+gameLabel+'</div></div><button class="btn btn-xs btn-gr" onclick="approveGuest(\''+gu.id+'\')">\u2713 Approve</button><button class="btn btn-xs btn-re" onclick="rejectGuest(\''+gu.id+'\')">Reject</button></div>';
+  }).join('');
+}
+
 function signOut(){CU=null;localStorage.removeItem('rwe_email');renderNav();renderGames();showPage('home');toast('Signed out.','');}
 
 function getOwed(memberId){
@@ -901,7 +1115,6 @@ function gameCard(game){
   }
 
   // ── UPCOMING GAME — full interactive card ──────────────────────
-// ── UPCOMING GAME — full interactive card ──────────────────────
   const barCol=pct<45?'var(--gr)':pct<80?'var(--go)':'var(--or)';
   let balBanner='';
   if(CU && isPending()){balBanner='<div class="bal-banner owe" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.25);color:var(--go)"><span class="bbi">\u23f3</span><div class="bbt"><strong>Pending Ed\'s approval</strong><span>You can browse games \u2014 RSVP unlocks once approved.</span></div></div>';}
@@ -910,11 +1123,39 @@ function gameCard(game){
   if(!rosterRows)rosterRows='<div style="font-size:12px;color:var(--ink3);padding:5px 0 2px">No one yet \u2014 be the first!</div>';
   let wlSection='';
   if(game.waitlist.length){const wlRows=game.waitlist.map((e,i)=>playerRowHTML(e,i,game,true)).join('');wlSection='<div class="wl-div"><span>\u23f3 Waitlist ('+game.waitlist.length+')</span></div>'+wlRows;}
+
+  // Pending guests for this game
+  const pendingGuestsForGame = guestsData.filter(gu => gu.status === 'pending' && gu._game_id === game.id);
+  let pendingGuestsSection = '';
+  if(pendingGuestsForGame.length){
+    pendingGuestsSection = '<div class="wl-div" style="margin-top:14px"><span style="color:var(--bl)">\uD83E\uDD1D Pending Guests ('+pendingGuestsForGame.length+')</span></div>';
+    pendingGuestsSection += pendingGuestsForGame.map(gu => {
+      const host = members.find(m => m.id === gu.host_member_id);
+      const initials = (gu.first_name+' '+(gu.last_name||'')).trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      return '<div class="player-row" style="opacity:.8;background:rgba(56,189,248,.05);border-color:rgba(56,189,248,.18)"><div class="av" style="border-color:rgba(56,189,248,.35);color:var(--bl)">'+initials+'</div><div class="pinfo"><div class="pname">'+gu.first_name+' '+(gu.last_name||'')+'</div><div class="psub">Guest of '+(host?host.first_name:'?')+' \u00b7 Pending approval</div></div><span class="badge" style="background:var(--bl2);color:var(--bl);border:1px solid rgba(56,189,248,.3)">Pending</span></div>';
+    }).join('');
+  }
+
   let addSection='';
   if(CU && isPending()){addSection='<div style="margin-top:14px;padding:12px 14px;background:rgba(251,191,36,.08);border-radius:9px;border:1px solid rgba(251,191,36,.2);font-size:13px;color:var(--go);text-align:center">\u23f3 RSVP unlocks once Ed approves your account</div>';}
-  else if(CU){const ph=full?'Add to waitlist\u2026':'Add a name\u2026';const lbl=full?'\u23f3':'\uD83C\uDFC0 Add';addSection='<div class="add-row"><input class="add-input" id="add-'+game.id+'" placeholder="'+ph+'" maxlength="40" onkeydown="if(event.key===\'Enter\')addName(\''+game.id+'\')"><button class="btn btn-or" onclick="addName(\''+game.id+'\')" style="padding:10px 16px">'+lbl+'</button></div>';}
+  else if(CU){
+    const ph=full?'Add to waitlist\u2026':'Add a name\u2026';
+    const lbl=full?'\u23f3':'\uD83C\uDFC0 Add';
+    addSection='<div class="add-row"><input class="add-input" id="add-'+game.id+'" placeholder="'+ph+'" maxlength="40" onkeydown="if(event.key===\'Enter\')addName(\''+game.id+'\')"><button class="btn btn-or" onclick="addName(\''+game.id+'\')" style="padding:10px 16px">'+lbl+'</button></div>';
+
+    // Guest button — only if game is ≤7 days away, host approved, and host has <2 guests for this game
+    if(isApproved() && isGameWithinDays(game, 7)){
+      const myGuestCount = guestsData.filter(gu => gu.host_member_id === CU.id && gu._game_id === game.id && gu.status !== 'rejected').length;
+      if(myGuestCount < 2){
+        addSection += '<button class="btn btn-bl" style="width:100%;margin-top:8px;padding:10px" onclick="openGuestModal(\''+game.id+'\')">\uD83E\uDD1D + Add Guest ('+myGuestCount+'/2)</button>';
+      } else {
+        addSection += '<div style="margin-top:8px;padding:8px 12px;background:var(--s2);border-radius:8px;border:1px solid var(--rim);font-size:11px;color:var(--ink3);text-align:center">Guest cap reached (2/2) for this game</div>';
+      }
+    }
+  }
   else{addSection='<div style="margin-top:14px;padding:10px 14px;background:var(--s2);border-radius:9px;border:1px solid var(--rim);font-size:13px;color:var(--ink2)"><a href="#" class="al" onclick="showPage(\'login\');return false">Sign in</a> or <a href="#" class="al" onclick="showPage(\'register\');return false">register</a> to add names.</div>';}
-  return '<div class="card"><div class="card-head"><div><div class="game-day">'+game.day_short+'</div><div class="game-date">'+game.date_str+'</div></div><div class="time-badge">'+game.time_str+'</div></div><div class="card-body">'+balBanner+'<div class="roster-meta"><div class="roster-label">Confirmed \u00b7 '+n+'/'+max+'</div>'+(game.waitlist.length?'<div style="font-size:11px;color:var(--go);font-weight:600">'+game.waitlist.length+' waitlisted</div>':'')+' </div><div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+barCol+'"></div></div>'+(n<6?'<div style="font-size:12px;color:var(--go);margin-bottom:10px">\u26a0 Need '+(6-n)+' more for a full run</div>':'')+rosterRows+wlSection+addSection+'<div class="ext-links"><a href="https://venmo.com/Ed-Arcinue" target="_blank" class="ext-link lv">\uD83D\uDCB8 Pay @Ed-Arcinue $11</a><a href="https://shoot360-prod.saloncloudsplus.io/ghl/athlete-info" target="_blank" class="ext-link lw">\uD83D\uDCCB Sign Shoot 360 Waiver</a></div></div></div>';
+
+  return '<div class="card"><div class="card-head"><div><div class="game-day">'+game.day_short+'</div><div class="game-date">'+game.date_str+'</div></div><div class="time-badge">'+game.time_str+'</div></div><div class="card-body">'+balBanner+'<div class="roster-meta"><div class="roster-label">Confirmed \u00b7 '+n+'/'+max+'</div>'+(game.waitlist.length?'<div style="font-size:11px;color:var(--go);font-weight:600">'+game.waitlist.length+' waitlisted</div>':'')+' </div><div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%;background:'+barCol+'"></div></div>'+(n<6?'<div style="font-size:12px;color:var(--go);margin-bottom:10px">\u26a0 Need '+(6-n)+' more for a full run</div>':'')+rosterRows+wlSection+pendingGuestsSection+addSection+'<div class="ext-links"><a href="https://venmo.com/Ed-Arcinue" target="_blank" class="ext-link lv">\uD83D\uDCB8 Pay @Ed-Arcinue $11</a><a href="https://shoot360-prod.saloncloudsplus.io/ghl/athlete-info" target="_blank" class="ext-link lw">\uD83D\uDCCB Sign Shoot 360 Waiver</a></div></div></div>';
 }
 
 function playerRowHTML(entry,index,game,isWl){
@@ -965,16 +1206,47 @@ function startCancel(gameId,entryId,table,name){
 async function doCancel(){
   const{gameId,entryId,table}=pendingCancel;
   document.getElementById('cancel-confirm-btn').disabled=true;
+
+  // Cascade: if host cancels, find all their guests for this game and cancel them too
+  const entry = (table==='roster'?games.find(g=>g.id===gameId)?.roster:games.find(g=>g.id===gameId)?.waitlist)?.find(e=>e.id===entryId);
+  const isHostCancelling = entry && entry.member_id && entry.entry_type === 'member';
+  let cascadedGuestNames = [];
+  if(isHostCancelling){
+    // Find guest rows where host_member_id = this member AND game_id = this game
+    const guestEntries = [
+      ...(games.find(g=>g.id===gameId)?.roster||[]),
+      ...(games.find(g=>g.id===gameId)?.waitlist||[])
+    ].filter(e => e.entry_type === 'guest' && e.host_member_id === entry.member_id);
+    for(const ge of guestEntries){
+      cascadedGuestNames.push(ge.display_name);
+      if(ge.guest_id) await sb.from('guests').update({ status: 'rejected', approval_note: 'Host cancelled' }).eq('id', ge.guest_id);
+    }
+    // Delete all cascaded guest roster/waitlist entries
+    if(guestEntries.length){
+      const guestIds = guestEntries.map(ge => ge.id);
+      await sb.from('roster').delete().in('id', guestIds);
+      await sb.from('waitlist').delete().in('id', guestIds);
+    }
+  }
+
   const{error}=await sb.from(table).delete().eq('id',entryId);
   if(error){toast('Error: '+error.message,'err');document.getElementById('cancel-confirm-btn').disabled=false;return;}
   if(table==='roster'){
     const game=games.find(g=>g.id===gameId);
-    if(game&&game.waitlist.length>0){
-      const next=game.waitlist[0];
-      await sb.from('roster').insert({game_id:next.game_id,display_name:next.display_name,member_id:next.member_id,added_by_id:next.added_by_id,entry_type:next.entry_type});
+    // Re-query waitlist since cascade may have removed some
+    const remainingWL = (game?.waitlist||[]).filter(w => !cascadedGuestNames.includes(w.display_name));
+    if(remainingWL.length>0){
+      const next=remainingWL[0];
+      await sb.from('roster').insert({game_id:next.game_id,display_name:next.display_name,member_id:next.member_id,guest_id:next.guest_id,host_member_id:next.host_member_id,added_by_id:next.added_by_id,entry_type:next.entry_type});
       await sb.from('waitlist').delete().eq('id',next.id);
       toast('Removed. '+next.display_name+' moved up from the waitlist! \uD83C\uDFC0','ok');
-    }else{toast('Player removed.','');}
+    }else{
+      if(cascadedGuestNames.length){
+        toast('Removed. Also cancelled '+cascadedGuestNames.length+' guest'+(cascadedGuestNames.length>1?'s':'')+' you brought.', '');
+      } else {
+        toast('Player removed.','');
+      }
+    }
   }else{toast('Removed from waitlist.','');}
   document.getElementById('cancel-confirm-btn').disabled=false;
   closeModal('cancel-modal'); await reload();
@@ -1027,6 +1299,7 @@ const ub=document.getElementById('admin-users-body');
     else{actions='<button class="btn btn-xs '+(m.is_admin?'btn-re':'btn-gr')+'" onclick="toggleAdminRole(\''+m.id+'\','+(!m.is_admin)+')">'+(m.is_admin?'Remove Admin':'Make Admin')+'</button>';}
     return '<div class="arow" style="'+(pending?'background:rgba(251,191,36,.05);margin:0 -20px;padding:10px 20px':'')+'"><div style="flex:1"><div class="uname">'+m.first_name+' '+m.last_name+' '+pendingBadge+' '+adminBadge+'</div><div class="uemail">'+m.email+(m.phone?' \u00b7 '+m.phone:'')+'</div></div>'+actions+'</div>';
   }).join('');  
+  renderAdminGuests();
   renderAdminQuotes();
 }
 
