@@ -369,6 +369,13 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
       <div class="admin-head"><h3>REGISTERED MEMBERS</h3><span id="admin-user-count"></span></div>
       <div class="admin-body" id="admin-users-body"></div>
     </div>
+<div class="admin-card" id="admin-attention-card" style="border-color:rgba(248,113,113,.35);display:none">
+      <div class="admin-head" style="background:linear-gradient(135deg,rgba(248,113,113,.08),rgba(248,113,113,.03));border-bottom:1px solid rgba(248,113,113,.1)">
+        <h3 style="color:var(--re)">&#128276; NEEDS YOUR ATTENTION</h3>
+        <span id="admin-attention-count"></span>
+      </div>
+      <div class="admin-body" id="admin-attention-body"></div>
+    </div>
     <div class="admin-card" id="admin-guests-card">
       <div class="admin-head"><h3>PENDING GUESTS</h3><span id="admin-guests-count"></span></div>
       <div class="admin-body" id="admin-guests-body"></div>
@@ -700,11 +707,10 @@ games=(gRes.data||[]).map(g=>({...g,roster:roster.filter(r=>r.game_id===g.id),wa
 }
 
 async function reload(){
-  await loadAll(); renderGames();
+  await loadAll(); renderGames(); renderNav();
   if(document.getElementById('page-admin').classList.contains('active'))renderAdmin();
   if(document.getElementById('page-payments').classList.contains('active'))renderPayments();
 }
-
 function subscribeRealtime(){
   sb.channel('db')
     .on('postgres_changes',{event:'*',schema:'public',table:'roster'},reload)
@@ -725,10 +731,23 @@ function renderNav(){
   if(!CU){
     el.innerHTML='<button class="btn btn-gh btn-sm" onclick="showPage(\'login\')">Sign In</button><button class="btn btn-or btn-sm" onclick="showPage(\'register\')">Register</button>';
   }else{
-    el.innerHTML='<button class="btn btn-gh btn-sm" onclick="renderPayments();showPage(\'payments\')">&#128179; My Sessions</button>'+
-      (CU.is_admin?'<button class="btn btn-gh btn-sm" onclick="renderAdmin();showPage(\'admin\')">&#9881; Admin</button>':'')+
-      '<span class="nav-user">'+CU.first_name+'</span><button class="btn btn-gh btn-sm" onclick="signOut()">Out</button>';
+    const attnCount = isAdmin() ? getAttentionCount() : 0;
+    const attnBtn = attnCount > 0
+      ? '<button class="btn btn-sm" style="background:var(--re2);color:var(--re);border:1px solid rgba(248,113,113,.4);animation:pulse 2s ease infinite" onclick="renderAdmin();showPage(\'admin\');setTimeout(()=>{const el=document.getElementById(\'admin-attention-card\');if(el)el.scrollIntoView({behavior:\'smooth\',block:\'start\'});},100)">\uD83D\uDD14 Attn ('+attnCount+')</button>'
+      : '';
+    el.innerHTML=attnBtn
+      +'<button class="btn btn-gh btn-sm" onclick="renderPayments();showPage(\'payments\')">&#128179; My Sessions</button>'
+      +(isAdmin()?'<button class="btn btn-gh btn-sm" onclick="renderAdmin();showPage(\'admin\')">&#9881; Admin</button>':'')
+      +'<span class="nav-user">'+CU.first_name+'</span><button class="btn btn-gh btn-sm" onclick="signOut()">Out</button>';
   }
+}
+
+function getAttentionCount(){
+  if(!CU || !isAdmin()) return 0;
+  const pendingMembers = members.filter(m => isPending(m)).length;
+  const pendingGuests = guestsData.filter(gu => gu.status === 'pending').length;
+  const unsignedGuestWaivers = guestsData.filter(gu => gu.status === 'approved' && !gu.waiver_signed).length;
+  return pendingMembers + pendingGuests + unsignedGuestWaivers;
 }
 
 function showPage(name){
@@ -1010,6 +1029,67 @@ async function rejectGuest(guestId){
   await loadAll(); renderAdmin(); toast(gu.first_name+' rejected.', '');
 }
 
+function renderAttention(){
+  const card = document.getElementById('admin-attention-card');
+  const body = document.getElementById('admin-attention-body');
+  const count = getAttentionCount();
+  if(!card || !body) return;
+
+  if(count === 0){
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = '';
+  document.getElementById('admin-attention-count').textContent = count + ' item' + (count !== 1 ? 's' : '');
+
+  const sections = [];
+
+  // Pending members
+  const pendingMembers = members.filter(m => isPending(m));
+  if(pendingMembers.length){
+    sections.push('<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--go);margin-bottom:8px">\u23f3 New Accounts Waiting ('+pendingMembers.length+')</div>'+
+      pendingMembers.map(m => '<div class="arow" style="background:rgba(251,191,36,.05);margin:0 -20px;padding:10px 20px;border-bottom:1px solid var(--rim2)"><div style="flex:1"><div class="uname">'+m.first_name+' '+m.last_name+'</div><div class="uemail">'+m.email+(m.phone?' \u00b7 '+m.phone:'')+'</div></div><button class="btn btn-xs btn-gr" onclick="approveMember(\''+m.id+'\')">\u2713 Approve</button><button class="btn btn-xs btn-re" onclick="rejectMember(\''+m.id+'\')">Reject</button></div>').join('')+
+    '</div>');
+  }
+
+  // Pending guests
+  const pendingGuests = guestsData.filter(gu => gu.status === 'pending');
+  if(pendingGuests.length){
+    sections.push('<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bl);margin-bottom:8px">\uD83E\uDD1D Guests Waiting ('+pendingGuests.length+')</div>'+
+      pendingGuests.map(gu => {
+        const host = members.find(m => m.id === gu.host_member_id);
+        const game = games.find(g => g.id === gu._game_id);
+        const gameLabel = game ? (game.day_short+' '+game.date_str) : 'Unknown game';
+        return '<div class="arow" style="background:rgba(56,189,248,.04);margin:0 -20px;padding:10px 20px;border-bottom:1px solid var(--rim2)"><div style="flex:1"><div class="uname">'+gu.first_name+' '+(gu.last_name||'')+'</div><div class="uemail">'+gu.email+' \u00b7 Guest of '+(host?host.first_name:'?')+' \u00b7 '+gameLabel+'</div></div><button class="btn btn-xs btn-gr" onclick="approveGuest(\''+gu.id+'\')">\u2713 Approve</button><button class="btn btn-xs btn-re" onclick="rejectGuest(\''+gu.id+'\')">Reject</button></div>';
+      }).join('')+
+    '</div>');
+  }
+
+  // Approved guests missing waiver
+  const unsignedWaivers = guestsData.filter(gu => gu.status === 'approved' && !gu.waiver_signed);
+  if(unsignedWaivers.length){
+    sections.push('<div style="margin-bottom:4px"><div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--or);margin-bottom:8px">\u270D Guests Without Signed Waiver ('+unsignedWaivers.length+')</div>'+
+      unsignedWaivers.map(gu => {
+        const host = members.find(m => m.id === gu.host_member_id);
+        return '<div class="arow" style="background:rgba(255,92,26,.04);margin:0 -20px;padding:10px 20px;border-bottom:1px solid var(--rim2)"><div style="flex:1"><div class="uname">'+gu.first_name+' '+(gu.last_name||'')+'</div><div class="uemail">'+gu.email+' \u00b7 Guest of '+(host?host.first_name:'?')+'</div></div><button class="btn btn-xs btn-gr" onclick="markGuestWaiverSigned(\''+gu.id+'\')">\u2713 Mark Signed</button></div>';
+      }).join('')+
+    '</div>');
+  }
+
+  body.innerHTML = sections.join('');
+}
+
+async function markGuestWaiverSigned(guestId){
+  const gu = guestsData.find(x => x.id === guestId);
+  if(!gu) return;
+  const { error } = await sb.from('guests').update({ waiver_signed: true }).eq('id', guestId);
+  if(error){ toast('Error: '+error.message, 'err'); return; }
+  await loadAll();
+  renderNav();
+  renderAdmin();
+  toast('\u2713 '+gu.first_name+'\'s waiver marked signed.', 'ok');
+}  
+  
 function renderAdminGuests(){
   const el = document.getElementById('admin-guests-body');
   if(!el) return;
@@ -1298,7 +1378,8 @@ const ub=document.getElementById('admin-users-body');
     else if(pending){actions='<button class="btn btn-xs btn-gr" onclick="approveMember(\''+m.id+'\')">\u2713 Approve</button><button class="btn btn-xs btn-re" onclick="rejectMember(\''+m.id+'\')">Reject</button>';}
     else{actions='<button class="btn btn-xs '+(m.is_admin?'btn-re':'btn-gr')+'" onclick="toggleAdminRole(\''+m.id+'\','+(!m.is_admin)+')">'+(m.is_admin?'Remove Admin':'Make Admin')+'</button>';}
     return '<div class="arow" style="'+(pending?'background:rgba(251,191,36,.05);margin:0 -20px;padding:10px 20px':'')+'"><div style="flex:1"><div class="uname">'+m.first_name+' '+m.last_name+' '+pendingBadge+' '+adminBadge+'</div><div class="uemail">'+m.email+(m.phone?' \u00b7 '+m.phone:'')+'</div></div>'+actions+'</div>';
-  }).join('');  
+}).join('');  
+  renderAttention();
   renderAdminGuests();
   renderAdminQuotes();
 }
