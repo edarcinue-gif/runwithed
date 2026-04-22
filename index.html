@@ -391,6 +391,24 @@ const SUPABASE_KEY = 'sb_publishable_nZn1ifvlkw-0mtk5TtGj9Q_GxfX9jve';</pre>with
   </div>
 </div>
 
+<!-- NEXT GAME PROMPT MODAL -->
+<div class="overlay" id="nextgame-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="dismissNextGamePrompt('later')">&times;</button>
+    <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--or);margin-bottom:6px">Next Run</div>
+    <h2 id="nextgame-title">YOU IN?</h2>
+    <p class="modal-sub" id="nextgame-sub"></p>
+    <div style="background:var(--s2);border:1px solid var(--rim);border-radius:10px;padding:14px 16px;margin-bottom:20px">
+      <div style="font-size:12px;color:var(--ink2);line-height:1.6" id="nextgame-details"></div>
+    </div>
+    <button class="btn btn-or btn-lg" id="nextgame-yes-btn" onclick="confirmNextGame()">&#127936; Yes, I'm in</button>
+    <div style="display:flex;gap:9px;margin-top:10px">
+      <button class="btn btn-gh" style="flex:1" onclick="dismissNextGamePrompt('skip')">Not this week</button>
+      <button class="btn btn-gh" style="flex:1" onclick="dismissNextGamePrompt('later')">Ask me later</button>
+    </div>
+  </div>
+</div>
+
 <!-- CANCEL MODAL -->
 <div class="overlay" id="cancel-modal">
   <div class="modal" style="border-color:rgba(248,113,113,.25)">
@@ -615,6 +633,7 @@ async function init(){
     const saved=localStorage.getItem('rwe_email');
     if(saved) CU=members.find(m=>m.email===saved)||null;
     renderNav(); renderGames(); subscribeRealtime();
+    if(CU) setTimeout(maybeShowNextGamePrompt, 900);
   }catch(e){
     document.getElementById('games-list').innerHTML=
       '<div class="loading-wrap"><div style="color:var(--re)">\u26a0 Could not connect to database.<br><small>'+e.message+'</small></div></div>';
@@ -718,6 +737,77 @@ async function submitLogin(){
   document.getElementById('err-login').style.display='none';
   renderNav(); renderGames(); showPage('home');
   toast('Welcome back, '+user.first_name+'! \uD83C\uDFC0','ok');
+  setTimeout(maybeShowNextGamePrompt, 600);
+}
+
+/* =====================================================
+   NEXT GAME PROMPT — fires once per game per user
+===================================================== */
+let _nextGameForPrompt = null;
+
+function findNextGameForPrompt(){
+  if(!CU || !isApproved() || isPending()) return null;
+  const today = window.todayStr || new Date().toISOString().split('T')[0];
+  const sevenDaysOut = new Date(); sevenDaysOut.setDate(sevenDaysOut.getDate()+7);
+  const sevenDaysOutStr = sevenDaysOut.toISOString().split('T')[0];
+  for(const g of games){
+    if(!g.game_date) continue;
+    if(g.game_date < today) continue;
+    if(g.game_date > sevenDaysOutStr) continue;
+    const alreadyOn = [...g.roster, ...g.waitlist].some(e => e.member_id === CU.id);
+    if(alreadyOn) continue;
+    const dismissed = dismissedPrompts.some(d => d.member_id === CU.id && d.game_id === g.id);
+    if(dismissed) continue;
+    return g;
+  }
+  return null;
+}
+
+function maybeShowNextGamePrompt(){
+  const g = findNextGameForPrompt();
+  if(!g) return;
+  _nextGameForPrompt = g;
+  const count = g.roster.length, max = g.max_players, full = count >= max;
+  document.getElementById('nextgame-title').textContent = 'YOU IN FOR ' + g.day_short + '?';
+  document.getElementById('nextgame-sub').textContent = g.date_str + ' \u00b7 ' + g.time_str;
+  let detail = '<strong style="color:var(--ink)">' + count + '/' + max + ' confirmed</strong>';
+  if(full) detail += ' \u00b7 <span style="color:var(--go)">You\'ll go on the waitlist</span>';
+  else if(count < 6) detail += ' \u00b7 <span style="color:var(--go)">Need ' + (6 - count) + ' more for a full run</span>';
+  detail += '<br><span style="color:var(--ink3);font-size:11px;margin-top:4px;display:inline-block">Shoot 360 Leander \u00b7 $11 Venmo @Ed-Arcinue after you play</span>';
+  document.getElementById('nextgame-details').innerHTML = detail;
+  document.getElementById('nextgame-yes-btn').innerHTML = full ? '\u23f3 Yes, put me on the waitlist' : '\uD83C\uDFC0 Yes, I\'m in';
+  openModal('nextgame-modal');
+}
+
+async function confirmNextGame(){
+  const g = _nextGameForPrompt;
+  if(!g || !CU) return;
+  const btn = document.getElementById('nextgame-yes-btn');
+  btn.disabled = true;
+  const displayName = CU.first_name + ' ' + CU.last_name;
+  const full = g.roster.length >= g.max_players;
+  const table = full ? 'waitlist' : 'roster';
+  const { error } = await sb.from(table).insert({
+    game_id: g.id, display_name: displayName, member_id: CU.id,
+    added_by_id: CU.id, entry_type: 'member'
+  });
+  btn.disabled = false;
+  if(error){ toast('Error: ' + error.message, 'err'); return; }
+  closeModal('nextgame-modal');
+  await reload();
+  toast(full
+    ? '\u23f3 You\'re on the waitlist for ' + g.day_short + ' ' + g.date_str
+    : '\uD83C\uDFC0 You\'re in for ' + g.day_short + ' ' + g.date_str + '!', 'ok');
+}
+
+async function dismissNextGamePrompt(mode){
+  closeModal('nextgame-modal');
+  if(mode === 'skip' && _nextGameForPrompt && CU){
+    const g = _nextGameForPrompt;
+    await sb.from('dismissed_prompts').insert({ member_id: CU.id, game_id: g.id });
+    await reload();
+  }
+  _nextGameForPrompt = null;
 }
 
 function signOut(){CU=null;localStorage.removeItem('rwe_email');renderNav();renderGames();showPage('home');toast('Signed out.','');}
